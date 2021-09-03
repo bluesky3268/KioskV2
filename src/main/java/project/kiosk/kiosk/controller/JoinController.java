@@ -22,7 +22,7 @@ public class JoinController {
         return "admin/joinForm";
     }
 
-    @PostMapping()
+    @PostMapping
     public String join(@Validated MemberJoinDTO memberJoin, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/joinForm";

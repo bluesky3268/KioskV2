@@ -1,9 +1,11 @@
 package project.kiosk.kiosk.dto;
 
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
 @ToString
@@ -21,6 +23,6 @@ public class MemberJoinDTO {
     @NotNull
     private String role;
     @NotNull
-    private String thumbImg;
+    private MultipartFile thumbImg;
 
 }

@@ -1,12 +1,14 @@
 package project.kiosk.kiosk.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
 public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,9 +18,10 @@ public class Member {
     private String location;
     private LocalDateTime regDate;
     private String role;
-    private String thumbImg;
+    @OneToOne
+    private UploadFile thumbImg;
 
-    public Member(String memberId, String password, String location, LocalDateTime regDate, String role, String thumbImg) {
+    public Member( String memberId, String password, String location, LocalDateTime regDate, String role, UploadFile thumbImg) {
         this.memberId = memberId;
         this.password = password;
         this.location = location;

@@ -13,6 +13,11 @@ import java.util.Optional;
 
 @Repository
 public class MemberRepository implements JpaRepository<Member, Long> {
+
+    public Member findByMemberId(String memberId) {
+        return null;
+    }
+
     @Override
     public List<Member> findAll() {
         return null;
