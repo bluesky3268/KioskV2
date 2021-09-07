@@ -12,7 +12,7 @@ import project.kiosk.kiosk.service.MemberService;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/member")
+@RequestMapping("/admin/join")
 public class JoinController {
 
     private final MemberService memberService;

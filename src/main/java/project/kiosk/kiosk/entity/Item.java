@@ -1,29 +1,40 @@
 package project.kiosk.kiosk.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 public class Item {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "item_id")
     private Long id;
+
     private String itemName;
+
     private Integer price;
+
     @OneToOne
     private UploadFile img;
-    private boolean isSoldOut;
-    private Integer memberId;
 
-    public Item(String itemName, Integer price, UploadFile img, boolean isSoldOut, Integer memberId) {
+    private boolean isSoldOut;
+
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    public Item(String itemName, Integer price, UploadFile img, boolean isSoldOut, Member member) {
         this.itemName = itemName;
         this.price = price;
         this.img = img;
         this.isSoldOut = isSoldOut;
-        this.memberId = memberId;
+        this.member = member;
     }
 }

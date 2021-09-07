@@ -1,9 +1,11 @@
 package project.kiosk.kiosk.serviceImpl;
 
+import org.springframework.stereotype.Service;
 import project.kiosk.kiosk.dto.ItemAddDTO;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.service.ItemService;
 
+@Service
 public class ItemServiceImpl implements ItemService {
 
     @Override

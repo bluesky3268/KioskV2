@@ -40,18 +40,24 @@ public class LoginController {
         Member loginMember = memberService.login(memberLogin);
         if (loginMember != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("loggedIn", loginMember.getMemberId());
+            session.setAttribute("loggedIn", loginMember.getLoginId());
+            log.info("로그인 성공");
             return "redirect:" + redirectURL;
         }
 
         // 로그인 실패
         bindingResult.reject("loginFail", "올바르지 않은 아이디 혹은 비밀번호입니다.");
-        return "admin/adminMain";
+        return "admin/loginForm";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/log_out")
     public String logout(HttpServletRequest request) {
-        memberService.logout(request);
+        String logout = memberService.logout(request);
+        if (logout.equals("true")) {
+            log.info("로그아웃 성공");
+            return "redirect:/login";
+        }
         return "redirect:/";
     }
+
 }

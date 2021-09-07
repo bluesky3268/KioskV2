@@ -11,4 +11,9 @@ public class MemberLoginDTO {
     private String loginId;
     @NotNull
     private String loginPwd;
+
+    public MemberLoginDTO(String loginId, String loginPwd) {
+        this.loginId = loginId;
+        this.loginPwd = loginPwd;
+    }
 }

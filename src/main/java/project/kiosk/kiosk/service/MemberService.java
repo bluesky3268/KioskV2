@@ -4,22 +4,32 @@ import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberLoginDTO;
 import project.kiosk.kiosk.dto.MemberUpdateDTO;
 import project.kiosk.kiosk.entity.Member;
+import project.kiosk.kiosk.entity.Role;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 public interface MemberService {
+
+    Member joinInit(MemberJoinDTO memberJoinDTO);
 
     Member join(MemberJoinDTO memberJoinDTO);
 
     Member login(MemberLoginDTO memberLoginDTO);
 
-    boolean idDuplicateCheck(String memberId);
+    boolean idDuplicateCheck(String loginId);
 
-    Member findMemberById(String memberId);
+    Member findMemberByLoginId(String loginId);
 
-    void logout(HttpServletRequest request);
+    Member findMemberByMemberId(Long memberId);
 
-    Member updateMember(MemberUpdateDTO memberUpdateDTO);
+    List<Member> findMemberByRole(Role role);
+
+    String logout(HttpServletRequest request);
+
+    Member updateMember(Member member, MemberUpdateDTO updateMember);
+
+    void deleteMember(Long memberId);
 
 }

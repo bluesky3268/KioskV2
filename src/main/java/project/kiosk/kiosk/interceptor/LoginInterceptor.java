@@ -15,6 +15,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
         if (session == null || session.getAttribute("loggedIn") == null) {
             log.info("로그인하지 않은 사용자");
+            log.info("requestURI : {}", requestURI);
             response.sendRedirect("/login?redirectURL=" + requestURI);
             return false;
         }
