@@ -40,7 +40,7 @@ public class LoginController {
         Member loginMember = memberService.login(memberLogin);
         if (loginMember != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("loggedIn", loginMember.getLoginId());
+            session.setAttribute("loggedIn", loginMember.getId());
             log.info("로그인 성공");
             return "redirect:" + redirectURL;
         }

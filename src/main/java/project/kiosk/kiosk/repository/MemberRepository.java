@@ -10,13 +10,13 @@ import java.util.List;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    Member findMemberByLoginId(String loginId);
+    Member findMemberById(String id);
 
-    Member findMemberById(Long id);
+    Member findMemberByNo(Long no);
 
     List<Member> findByRoleLike(Role role);
 
     @Transactional
-    void deleteMemberById(Long id);
+    void deleteMemberByNo(Long no);
 
 }

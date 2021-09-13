@@ -14,8 +14,8 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
-    private Long id;
+    @Column(name = "item_no")
+    private Long no;
 
     private String itemName;
 
@@ -27,7 +27,7 @@ public class Item {
     private boolean isSoldOut;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_no")
     private Member member;
 
     public Item(String itemName, Integer price, UploadFile img, boolean isSoldOut, Member member) {

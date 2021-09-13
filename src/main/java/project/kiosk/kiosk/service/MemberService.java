@@ -22,7 +22,7 @@ public interface MemberService {
 
     Member findMemberByLoginId(String loginId);
 
-    Member findMemberByMemberId(Long memberId);
+    Member findMemberByMemberNo(Long memberNo);
 
     List<Member> findMemberByRole(Role role);
 
@@ -30,6 +30,6 @@ public interface MemberService {
 
     Member updateMember(Member member, MemberUpdateDTO updateMember);
 
-    void deleteMember(Long memberId);
+    void deleteMember(Long memberNo);
 
 }

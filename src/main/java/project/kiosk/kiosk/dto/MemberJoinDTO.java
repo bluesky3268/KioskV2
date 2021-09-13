@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
 public class MemberJoinDTO {
 
     @NotNull
-    private String loginId;
+    private String id;
     @NotNull
     private String password;
     @NotNull
@@ -29,8 +29,8 @@ public class MemberJoinDTO {
     private MultipartFile thumbImg;
 
     // 관리자 등록용 생성자
-    public MemberJoinDTO(String loginId, String password, String passwordConfirm, Role role) {
-        this.loginId = loginId;
+    public MemberJoinDTO(String id, String password, String passwordConfirm, Role role) {
+        this.id = id;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
         this.role = role;

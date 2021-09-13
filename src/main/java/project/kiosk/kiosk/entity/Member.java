@@ -17,11 +17,11 @@ public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
-    private Long id;
+    @Column(name = "member_no")
+    private Long no;
 
     @NotNull
-    private String loginId;
+    private String id;
 
     @NotNull
     private String password;
@@ -43,15 +43,15 @@ public class Member {
     // 관리자 등록용 생성자
 
 
-    public Member(String loginId, String password, LocalDateTime regDate, Role role) {
-        this.loginId = loginId;
+    public Member(String id, String password, LocalDateTime regDate, Role role) {
+        this.id = id;
         this.password = password;
         this.regDate = regDate;
         this.role = role;
     }
 
-    public Member(String loginId, String password, @Nullable String location, LocalDateTime regDate, Role role, @Nullable UploadFile thumbImg) {
-        this.loginId = loginId;
+    public Member(String id, String password, @Nullable String location, LocalDateTime regDate, Role role, @Nullable UploadFile thumbImg) {
+        this.id = id;
         this.password = password;
         this.location = location;
         this.regDate = regDate;

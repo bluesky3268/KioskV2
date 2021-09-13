@@ -33,13 +33,13 @@ public class MemberServiceImpl implements MemberService {
     public Member joinInit(MemberJoinDTO memberJoinDTO) {
         LocalDateTime regDate = LocalDateTime.now();
         String encodedPwd = passwordEncoder.encode(memberJoinDTO.getPassword());
-        Member member = new Member(memberJoinDTO.getLoginId(), encodedPwd, regDate, Role.SUPERVISOR);
+        Member member = new Member(memberJoinDTO.getId(), encodedPwd, regDate, Role.SUPERVISOR);
 
-        log.info("joinMember : {}", memberJoinDTO.getLoginId());
+        log.info("joinMember : {}", memberJoinDTO.getId());
 
         Member savedMember = memberRepository.save(member);
 
-        log.info("savedMember : {}", savedMember.getLoginId());
+        log.info("savedMember : {}", savedMember.getId());
 
         return savedMember;
     }
@@ -50,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
             return null;
         }
 
-        if (idCheck(memberJoin.getLoginId()) && pwdCheck(memberJoin.getPassword(), memberJoin.getPasswordConfirm())) {
+        if (idCheck(memberJoin.getId()) && pwdCheck(memberJoin.getPassword(), memberJoin.getPasswordConfirm())) {
 
             LocalDateTime regDate = LocalDateTime.now();
             String encodedPwd = passwordEncoder.encode(memberJoin.getPassword());
@@ -63,7 +63,7 @@ public class MemberServiceImpl implements MemberService {
                 e.printStackTrace();
             }
 
-            Member member = new Member(memberJoin.getLoginId(),
+            Member member = new Member(memberJoin.getId(),
                     encodedPwd,
                     memberJoin.getLocation(),
                     regDate,
@@ -78,8 +78,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public boolean idDuplicateCheck(String loginId) {
-        Member findMember = memberRepository.findMemberByLoginId(loginId);
+    public boolean idDuplicateCheck(String id) {
+        Member findMember = memberRepository.findMemberById(id);
         if (findMember == null){
             // DB에 저장된 값이 없으면 사용 가능
             return true;
@@ -91,7 +91,7 @@ public class MemberServiceImpl implements MemberService {
     
     @Override
     public Member login(MemberLoginDTO memberLoginDTO) {
-        Member findMember = memberRepository.findMemberByLoginId(memberLoginDTO.getLoginId());
+        Member findMember = memberRepository.findMemberById(memberLoginDTO.getLoginId());
 
         if (findMember != null) {
             if (passwordEncoder.matches(memberLoginDTO.getLoginPwd(), findMember.getPassword())) {
@@ -121,13 +121,13 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findMemberByLoginId(String loginId) {
-        return memberRepository.findMemberByLoginId(loginId);
+    public Member findMemberByLoginId(String id) {
+        return memberRepository.findMemberById(id);
     }
 
     @Override
-    public Member findMemberByMemberId(Long id) {
-        return memberRepository.findMemberById(id);
+    public Member findMemberByMemberNo(Long no) {
+        return memberRepository.findMemberByNo(no);
     }
 
     private boolean pwdCheck(String password, String passwordConfirm) {
@@ -151,7 +151,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void deleteMember(Long memberId) {
-        memberRepository.deleteMemberById(memberId);
+    public void deleteMember(Long memberNo) {
+        memberRepository.deleteMemberByNo(memberNo);
     }
 }

@@ -28,29 +28,29 @@ public class AdminController {
         return "admin/memberList";
     }
 
-    @GetMapping("/members/{id}")
-    public String editMemberForm(@PathVariable("id") Long memberId, Model model) {
-        Member findMember = memberService.findMemberByMemberId(memberId);
+    @GetMapping("/members/{no}")
+    public String editMemberForm(@PathVariable("no") Long memberNo, Model model) {
+        Member findMember = memberService.findMemberByMemberNo(memberNo);
         model.addAttribute("member", findMember);
         return "admin/editForm";
     }
 
-    @PatchMapping("/members/{id}")
-    public String editMember(@PathVariable("id") Long memberId, @Validated MemberUpdateDTO updateMember, BindingResult bindingResult, Model model) {
+    @PatchMapping("/members/{no}")
+    public String editMember(@PathVariable("no") Long memberNo, @Validated MemberUpdateDTO updateMember, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/editForm";
         }
 
-        Member findMember = memberService.findMemberByMemberId(memberId);
+        Member findMember = memberService.findMemberByMemberNo(memberNo);
         Member updatedMember = memberService.updateMember(findMember, updateMember);
 
         model.addAttribute("update", updatedMember);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/members/{id}")
-    public String deleteMember(@PathVariable("id") Long memberId) {
-        memberService.deleteMember(memberId);
+    @DeleteMapping("/members/{no}")
+    public String deleteMember(@PathVariable("no") Long memberNo) {
+        memberService.deleteMember(memberNo);
         return "redirect:/members";
     }
 }
