@@ -26,8 +26,8 @@ public class init {
         List<Member> supervisorList = memberService.findMemberByRole(Role.SUPERVISOR);
 
         if (supervisorList.isEmpty()) {
-            MemberJoinDTO member = new MemberJoinDTO("ROOT", "1234", "1234", Role.SUPERVISOR);
-            MemberJoinDTO member2 = new MemberJoinDTO("SAMPLE", "1234", "1234", Role.MANAGER);
+            MemberJoinDTO member = new MemberJoinDTO("ROOT", "1234", "1234", "supervisor");
+            MemberJoinDTO member2 = new MemberJoinDTO("SAMPLE", "1234", "1234", "manager");
             log.info("joinInit()호출");
             Member savedMember = memberService.joinInit(member);
             Member savedMember2 = memberService.joinInit(member2);

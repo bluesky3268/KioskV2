@@ -37,12 +37,11 @@ public class Member {
     private Role role;
 
     @Nullable
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uploadFile_no")
     private UploadFile thumbImg;
 
     // 관리자 등록용 생성자
-
-
     public Member(String id, String password, LocalDateTime regDate, Role role) {
         this.id = id;
         this.password = password;
@@ -58,4 +57,6 @@ public class Member {
         this.role = role;
         this.thumbImg = thumbImg;
     }
+
+
 }

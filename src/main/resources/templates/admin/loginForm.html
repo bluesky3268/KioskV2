@@ -6,5 +6,15 @@
 </head>
 <body>
 로그인 페이지
+<form method="post" action="/login">
+    <div class="container">
+        <article>가게이름</article>
+        <article class="join_input"><input type="text" id="loginId" name="loginId" placeholder="가게 이름 입력"></article>
+        <article>암호</article>
+        <article class="join_input"><input type="password" id="loginPwd" name="loginPwd" placeholder="암호 입력"></article>
+    </div>
+    <br>
+    <button type="submit" id="join_btn">로그인</button>
+</form>
 </body>
 </html>

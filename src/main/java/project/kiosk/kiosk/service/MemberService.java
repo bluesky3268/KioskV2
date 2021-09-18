@@ -20,13 +20,13 @@ public interface MemberService {
 
     boolean idDuplicateCheck(String loginId);
 
-    Member findMemberByLoginId(String loginId);
+    Member findMemberById(String loginId);
 
     Member findMemberByMemberNo(Long memberNo);
 
     List<Member> findMemberByRole(Role role);
 
-    String logout(HttpServletRequest request);
+    String logout(HttpSession session);
 
     Member updateMember(Member member, MemberUpdateDTO updateMember);
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import project.kiosk.kiosk.dto.FileStore;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberLoginDTO;
@@ -28,12 +29,21 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileStore fileStore;
+    private final FileServiceImpl fileService;
 
     @Override
     public Member joinInit(MemberJoinDTO memberJoinDTO) {
         LocalDateTime regDate = LocalDateTime.now();
         String encodedPwd = passwordEncoder.encode(memberJoinDTO.getPassword());
-        Member member = new Member(memberJoinDTO.getId(), encodedPwd, regDate, Role.SUPERVISOR);
+
+        Member member = null;
+        Role role = null;
+        if (memberJoinDTO.getRole().equals("supervisor")) {
+            role = Role.SUPERVISOR;
+        }else{
+            role = Role.MANAGER;
+        }
+        member = new Member(memberJoinDTO.getId(), encodedPwd, regDate, role);
 
         log.info("joinMember : {}", memberJoinDTO.getId());
 
@@ -56,22 +66,35 @@ public class MemberServiceImpl implements MemberService {
             String encodedPwd = passwordEncoder.encode(memberJoin.getPassword());
 
             UploadFile uploadFile = null;
-
             try {
                 uploadFile = fileStore.saveFile(memberJoin.getThumbImg());
+                log.info("uploadFile 변환 성공 : {}, {}", uploadFile.getOriginalName(), uploadFile.getSaveName());
+                fileService.addFile(uploadFile);
+                log.info("uploadFile 저장 성공");
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            Member member = new Member(memberJoin.getId(),
+            Member member = null;
+            Role role = null;
+
+            if(memberJoin.getRole().equals("supervisor")){
+                role = Role.SUPERVISOR;
+            }else{
+                role = Role.MANAGER;
+            }
+
+            member = new Member(memberJoin.getId(),
                     encodedPwd,
                     memberJoin.getLocation(),
                     regDate,
-                    memberJoin.getRole(),
+                    role,
                     uploadFile);
 
-            Member savedMember = memberRepository.save(member);
 
+            Member savedMember = memberRepository.save(member);
+            log.info("등록 성공");
             return savedMember;
         }
         return null;
@@ -94,18 +117,22 @@ public class MemberServiceImpl implements MemberService {
         Member findMember = memberRepository.findMemberById(memberLoginDTO.getLoginId());
 
         if (findMember != null) {
+            log.info(memberLoginDTO.getLoginPwd());
+            log.info(findMember.getPassword());
             if (passwordEncoder.matches(memberLoginDTO.getLoginPwd(), findMember.getPassword())) {
                 return findMember;
+            }else{
+                log.info("올바르지 않은 비밀번호");
             }
         }
-        log.info("올바르지 않은 아이디 혹은 비밀번호");
+        log.info("올바르지 않은 아이디");
         return null;
 
     }
 
     @Override
-    public String logout(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
+    public String logout(HttpSession session) {
+//        HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
             return "true";
@@ -121,7 +148,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member findMemberByLoginId(String id) {
+    public Member findMemberById(String id) {
         return memberRepository.findMemberById(id);
     }
 
@@ -140,14 +167,28 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member updateMember(Member member, MemberUpdateDTO updateMember) {
-        member.setRole(updateMember.getRole());
+
+        String encodedPwd = passwordEncoder.encode(updateMember.getPassword());
+        if (updateMember.getThumbImg() != null) {
+            try {
+                UploadFile newImg = fileStore.saveFile(updateMember.getThumbImg());
+                member.setThumbImg(newImg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        Role role = null;
+        if (updateMember.getRole().equals("supervisor")) {
+            role = Role.SUPERVISOR;
+        } else {
+            role = Role.MANAGER;
+        }
+        member.setPassword(encodedPwd);
         member.setLocation(updateMember.getLocation());
-        member.setPassword(updateMember.getPassword());
-        member.setThumbImg(updateMember.getThumbImg());
+        member.setRole(role);
 
-        Member editedMember = memberRepository.save(member);
-
-        return editedMember;
+        return member;
     }
 
     @Override

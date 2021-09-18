@@ -51,8 +51,8 @@ public class LoginController {
     }
 
     @GetMapping("/log_out")
-    public String logout(HttpServletRequest request) {
-        String logout = memberService.logout(request);
+    public String logout(HttpSession session) {
+        String logout = memberService.logout(session);
         if (logout.equals("true")) {
             log.info("로그아웃 성공");
             return "redirect:/login";

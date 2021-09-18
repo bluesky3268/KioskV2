@@ -21,14 +21,22 @@ public class Item {
 
     private Integer price;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     private UploadFile img;
 
     private boolean isSoldOut;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_no")
     private Member member;
+
+    // 테스트용 생성자
+    public Item(String itemName, Integer price, boolean isSoldOut, Member member) {
+        this.itemName = itemName;
+        this.price = price;
+        this.isSoldOut = isSoldOut;
+        this.member = member;
+    }
 
     public Item(String itemName, Integer price, UploadFile img, boolean isSoldOut, Member member) {
         this.itemName = itemName;
