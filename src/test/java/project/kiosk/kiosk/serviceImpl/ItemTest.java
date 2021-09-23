@@ -31,7 +31,7 @@ public class ItemTest {
     @BeforeEach
     void 상품등록() {
         // 멤버 등록
-        MemberJoinDTO member1 = new MemberJoinDTO("member1", "1234", "1234", Role.MANAGER);
+        MemberJoinDTO member1 = new MemberJoinDTO("member1", "1234", "1234", "manager");
         Member joinMember = memberService.joinInit(member1);
         System.out.println("joinMember.getMemberId() = " + joinMember.getId());
 

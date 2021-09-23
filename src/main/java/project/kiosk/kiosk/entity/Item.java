@@ -38,6 +38,10 @@ public class Item {
         this.member = member;
     }
 
+    public void updatePrice(Integer price) {
+        this.price = price;
+    }
+
     public Item(String itemName, Integer price, UploadFile img, boolean isSoldOut, Member member) {
         this.itemName = itemName;
         this.price = price;

@@ -38,7 +38,7 @@ class MemberTest {
 
     @BeforeEach
     void 회원등록() {
-        MemberJoinDTO member1 = new MemberJoinDTO("member1", "1234", "1234", Role.MANAGER);
+        MemberJoinDTO member1 = new MemberJoinDTO("member1", "1234", "1234", "manager");
         Member joinMember = memberService.joinInit(member1);
         System.out.println("joinMember.getMemberId() = " + joinMember.getId());
     }
@@ -69,7 +69,7 @@ class MemberTest {
     @Test
     void 회원정보_수정() {
         Member member = memberService.findMemberById("member1");
-        MemberUpdateDTO update = new MemberUpdateDTO("1111", "z", Role.SUPERVISOR);
+        MemberUpdateDTO update = new MemberUpdateDTO("1111", "z", "supervisor");
 
         memberService.updateMember(member, update);
 

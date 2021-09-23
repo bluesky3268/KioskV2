@@ -169,6 +169,7 @@ public class MemberServiceImpl implements MemberService {
     public Member updateMember(Member member, MemberUpdateDTO updateMember) {
 
         String encodedPwd = passwordEncoder.encode(updateMember.getPassword());
+
         if (updateMember.getThumbImg() != null) {
             try {
                 UploadFile newImg = fileStore.saveFile(updateMember.getThumbImg());
