@@ -24,7 +24,7 @@ public class LoginController {
     private final MemberService memberService;
 
     @GetMapping("/login")
-    public String login() {
+    public String loginForm() {
         return "admin/loginForm";
     }
 
@@ -32,17 +32,21 @@ public class LoginController {
     public String login(@Validated MemberLoginDTO memberLogin, BindingResult bindingResult,
                         @RequestParam(defaultValue = "/") String redirectURL, HttpServletRequest request) {
 
+        log.info("login : {}, {}", memberLogin.getLoginId(), memberLogin.getLoginPwd());
         if (bindingResult.hasErrors()) {
+            log.info("로그인 바인딩 에러");
             return "admin/loginForm";
         }
 
         // 로그인 성공
-        Member loginMember = memberService.login(memberLogin);
-        if (loginMember != null) {
+        String loginMemberId = memberService.login(memberLogin);
+        Member findMember = memberService.findMemberById(loginMemberId);
+        if (loginMemberId != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("loggedIn", loginMember.getId());
+            session.setAttribute("loggedIn", loginMemberId);
+            session.setAttribute("role", findMember.getRole());
             log.info("로그인 성공");
-            return "redirect:" + redirectURL;
+            return "redirect:/admin";
         }
 
         // 로그인 실패

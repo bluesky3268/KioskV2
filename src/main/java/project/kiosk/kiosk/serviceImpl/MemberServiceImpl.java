@@ -2,10 +2,16 @@ package project.kiosk.kiosk.serviceImpl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import project.kiosk.kiosk.dto.FileStore;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
+import project.kiosk.kiosk.util.FileStore;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberLoginDTO;
 import project.kiosk.kiosk.dto.MemberUpdateDTO;
@@ -15,9 +21,9 @@ import project.kiosk.kiosk.entity.UploadFile;
 import project.kiosk.kiosk.repository.MemberRepository;
 import project.kiosk.kiosk.service.MemberService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,7 +38,7 @@ public class MemberServiceImpl implements MemberService {
     private final FileServiceImpl fileService;
 
     @Override
-    public Member joinInit(MemberJoinDTO memberJoinDTO) {
+    public String joinInit(MemberJoinDTO memberJoinDTO) {
         LocalDateTime regDate = LocalDateTime.now();
         String encodedPwd = passwordEncoder.encode(memberJoinDTO.getPassword());
 
@@ -51,11 +57,11 @@ public class MemberServiceImpl implements MemberService {
 
         log.info("savedMember : {}", savedMember.getId());
 
-        return savedMember;
+        return savedMember.getId();
     }
 
     @Override
-    public Member join(MemberJoinDTO memberJoin) {
+    public String join(MemberJoinDTO memberJoin) {
         if (memberJoin == null) {
             return null;
         }
@@ -95,7 +101,7 @@ public class MemberServiceImpl implements MemberService {
 
             Member savedMember = memberRepository.save(member);
             log.info("등록 성공");
-            return savedMember;
+            return savedMember.getId();
         }
         return null;
     }
@@ -113,14 +119,17 @@ public class MemberServiceImpl implements MemberService {
     }
     
     @Override
-    public Member login(MemberLoginDTO memberLoginDTO) {
+    public String login(MemberLoginDTO memberLoginDTO) {
+        log.info("loginParameter : {}, {}", memberLoginDTO.getLoginId(), memberLoginDTO.getLoginPwd());
         Member findMember = memberRepository.findMemberById(memberLoginDTO.getLoginId());
 
+
+        log.info("findMember : {}, {}", findMember.getId(), findMember.getRole());
         if (findMember != null) {
             log.info(memberLoginDTO.getLoginPwd());
             log.info(findMember.getPassword());
             if (passwordEncoder.matches(memberLoginDTO.getLoginPwd(), findMember.getPassword())) {
-                return findMember;
+                return findMember.getId();
             }else{
                 log.info("올바르지 않은 비밀번호");
             }
@@ -140,6 +149,19 @@ public class MemberServiceImpl implements MemberService {
             log.info("로그인이 먼저 필요");
             return "false";
         }
+    }
+
+    @Override
+    public List<Member> findMembers() {
+        return memberRepository.findAll();
+    }
+
+    @Override
+    public Page<Member> memberPaging(Pageable pageable) {
+        pageable = Pageable.ofSize(9);
+        Page<Member> managers = memberRepository.findAllByRoleLike(Role.MANAGER, pageable);
+        log.info("pageSize : {}", pageable.getPageSize());
+        return managers;
     }
 
     @Override
@@ -195,5 +217,11 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public void deleteMember(Long memberNo) {
         memberRepository.deleteMemberByNo(memberNo);
+    }
+
+    @Override
+    public Resource downloadImage(String filename) throws MalformedURLException {
+        UrlResource urlResource = new UrlResource("file:" + fileStore.getFullPath(filename));
+        return urlResource;
     }
 }

@@ -58,5 +58,15 @@ public class Member {
         this.thumbImg = thumbImg;
     }
 
-
+    @Override
+    public String toString() {
+        return "Member{" +
+                "no=" + no +
+                ", id='" + id + '\'' +
+                ", password='" + password + '\'' +
+                ", location='" + location + '\'' +
+                ", regDate=" + regDate +
+                ", role=" + role +
+                '}';
+    }
 }

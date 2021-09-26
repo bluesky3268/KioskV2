@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>[ 상품 목록 ]</h3>
+<table class="list">
+
+<tr th:each="member:${members}">
+    <ul>
+        <li class="arrow"><a href="#">[ < ]</a></li>
+        <li><a href="#" th:text="${member.id}">샘플1</a></li>
+        <li><a href="#">샘플2</a></li>
+        <li><a href="#">샘플3</a></li>
+        <li class="arrow"><a href="#"> [ > ] </a></li>
+    </ul>
+
+    <div th:each="item : ${items}">
+        <form th:action="@{/{no}/{itemNo} (no=${member.no}, itemNo=${item.no})}" method="post">
+        <div class="menu_img"><a href="#" th:text="${item.img}">음식이미지</a></div>
+        <div class="menu_title" th:text="${item.itemName}">음식이름</div>
+        <div class="price" th:text="${item.price}">9,000원</div>
+        <input type="hidden" name="${item.no}">
+        <input type="number" id="q" name="q" min="1" value="1"/>
+        <input type="submit" value="담기"/>
+        </form>
+
+    </div>
+</tr>
+</table>
+
+<div th:each="cart : ${session.cart}">
+    <span th:text="${cart.getItem().getItemName()}"></span>
+    <span th:text="${cart.quantity} + 개"></span> X
+    <span th:text="${cart.getItem().getPrice()} + 원"></span>
+</div>
+
+<div>
+    <input type="button" th:value="다음으로" th:onclick="|location.href='@{/order}'|" />
+</div>
+
+</body>
+</html>

@@ -3,9 +3,11 @@ package project.kiosk.kiosk.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import project.kiosk.kiosk.dto.ItemAddDTO;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
+import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.MemberService;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +20,7 @@ import java.util.List;
 public class init {
 
     private final MemberService memberService;
+    private final ItemService itemService;
 
     // 서버 실행 시 supervisor가 하나도 없으면 root 생성
     @PostConstruct
@@ -29,8 +32,14 @@ public class init {
             MemberJoinDTO member = new MemberJoinDTO("ROOT", "1234", "1234", "supervisor");
             MemberJoinDTO member2 = new MemberJoinDTO("SAMPLE", "1234", "1234", "manager");
             log.info("joinInit()호출");
-            Member savedMember = memberService.joinInit(member);
-            Member savedMember2 = memberService.joinInit(member2);
+            String savedMember = memberService.joinInit(member);
+            String savedMember2 = memberService.joinInit(member2);
+
+            Member sample = memberService.findMemberById("SAMPLE");
+
+            ItemAddDTO itemAddDTO = new ItemAddDTO("itemA", 10000, false, sample.getNo());
+            itemService.addItem(itemAddDTO, savedMember2);
+
         }else{
             return;
         }

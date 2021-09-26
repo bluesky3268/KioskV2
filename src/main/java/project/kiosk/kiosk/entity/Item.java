@@ -30,6 +30,10 @@ public class Item {
     @JoinColumn(name = "member_no")
     private Member member;
 
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "orders_no")
+//    private Order order;
+
     // 테스트용 생성자
     public Item(String itemName, Integer price, boolean isSoldOut, Member member) {
         this.itemName = itemName;

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>매장목록</title>
+</head>
+<body>
+매장 등록
+<button th:onclick="|location.href=@{/admin/member}|"></button>
+<br/>
+매장 목록
+<table>
+    <thead>
+        <tr>
+            <th>매장번호</th>
+            <th>매장로고</th>
+            <th>매장명</th>
+            <th>위치</th>
+            <th>입점일자</th>
+        </tr>
+    </thead>
+    <tbody th:each="member : ${members}">
+            <td th:text="${member.getNo()}">매장번호</td>
+            <img th:each="file : ${member.getThumbImg()}" th:src="|/admin/images/${file.getSaveName()}|" width="150" height="100"/>
+            <td th:text="${member.getId()}">매장명</td>
+            <td th:text="${member.getLocation()}">위치</td>
+            <td th:text="${member.getRegDate()}">입점일자</td>
+    </tbody>
+</table>
+
+
+
+
+</body>
+</html>

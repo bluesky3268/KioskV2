@@ -5,14 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import project.kiosk.kiosk.dto.FileStore;
+import project.kiosk.kiosk.util.FileStore;
 import project.kiosk.kiosk.dto.ItemAddDTO;
 import project.kiosk.kiosk.dto.ItemUpdateDTO;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.UploadFile;
 import project.kiosk.kiosk.repository.ItemRepository;
-import project.kiosk.kiosk.repository.MemberRepository;
 import project.kiosk.kiosk.service.ItemService;
 
 import java.io.IOException;

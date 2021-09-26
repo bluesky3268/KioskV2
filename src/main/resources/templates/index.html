@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>메인페이지</title>
+</head>
+<body>
+
+<header>[ FOOD COURT ]</header>
+매장을 먼저 선택해 주세요
+<ul>
+    <li th:each="manager:${managers}">
+        <a th:href="@{/{id} (id=${manager.getNo()})}">
+            <div th:text="${manager.id}"></div>
+            <div th:text="${manager.getThumbImg()}"></div>
+        </a>
+
+    </li>
+</ul>
+</body>
+</html>

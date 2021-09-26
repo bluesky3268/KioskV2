@@ -1,4 +1,4 @@
-package project.kiosk.kiosk.dto;
+package project.kiosk.kiosk.util;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;

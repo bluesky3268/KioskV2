@@ -1,5 +1,8 @@
 package project.kiosk.kiosk.service;
 
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberLoginDTO;
 import project.kiosk.kiosk.dto.MemberUpdateDTO;
@@ -8,21 +11,26 @@ import project.kiosk.kiosk.entity.Role;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.MalformedURLException;
 import java.util.List;
 
 public interface MemberService {
 
-    Member joinInit(MemberJoinDTO memberJoinDTO);
+    String joinInit(MemberJoinDTO memberJoinDTO);
 
-    Member join(MemberJoinDTO memberJoinDTO);
+    String join(MemberJoinDTO memberJoinDTO);
 
-    Member login(MemberLoginDTO memberLoginDTO);
+    String login(MemberLoginDTO memberLoginDTO);
 
     boolean idDuplicateCheck(String loginId);
 
     Member findMemberById(String loginId);
 
     Member findMemberByMemberNo(Long memberNo);
+
+    List<Member> findMembers();
+
+    Page<Member> memberPaging(Pageable pageable);
 
     List<Member> findMemberByRole(Role role);
 
@@ -31,5 +39,7 @@ public interface MemberService {
     Member updateMember(Member member, MemberUpdateDTO updateMember);
 
     void deleteMember(Long memberNo);
+
+    Resource downloadImage(String fileName) throws MalformedURLException;
 
 }

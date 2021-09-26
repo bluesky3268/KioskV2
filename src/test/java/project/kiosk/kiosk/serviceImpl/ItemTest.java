@@ -47,13 +47,13 @@ public class ItemTest {
 
     @Test
     void 판매자별_상품조회() {
-
+        // given
         Member findMember = memberService.findMemberById("member1");
 
-        System.out.println("findMember.getNo() = " + findMember.getNo());
-
+        // when
         List<Item> items = itemService.findItems(findMember.getNo());
 
+        // then
         assertThat(items.size()).isEqualTo(3);
         assertThat(items.get(0).getItemName()).isEqualTo("itemA");
         assertThat(items.get(0).getPrice()).isEqualTo(10000);
@@ -64,14 +64,15 @@ public class ItemTest {
     @Test
     void 상품_수정() {
 
+        // given
         Item itemA = itemService.findItemByItemName("itemA");
-
         ItemUpdateDTO update = new ItemUpdateDTO(50000, true);
 
+        // when
         itemService.editItem(itemA.getNo(), update);
-
         Item findItem = itemService.findItemByItemName("itemA");
 
+        // then
         assertThat(findItem.getPrice()).isEqualTo(50000);
         assertThat(findItem.isSoldOut()).isTrue();
 
@@ -79,12 +80,14 @@ public class ItemTest {
 
     @Test
     void 상품삭제() {
+        // given
         Item itemA = itemService.findItemByItemName("itemA");
 
+        // when
         itemService.deleteItem(itemA.getNo());
 
+        // then
         Item findItem = itemService.findItem(itemA.getNo());
-
         assertThat(findItem).isNull();
     }
 

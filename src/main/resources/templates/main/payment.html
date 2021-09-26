@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+ 결제하기
+
+ <div th:each="cart : ${session.cart}">
+     <span th:text="${cart.getItem().getItemName()}"></span>
+     <span th:text="${cart.quantity} + 개"></span> X
+     <span th:text="${cart.getItem().getPrice()} + 원"></span>
+ </div>
+ <div th:text="${session.totalPrice}" />
+ <input type="button" th:value="결제하기" th:onclick="|location.href='@{/payment}'|" />
+</body>
+</html>
