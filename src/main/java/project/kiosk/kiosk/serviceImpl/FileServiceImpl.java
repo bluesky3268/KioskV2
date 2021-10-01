@@ -7,6 +7,8 @@ import project.kiosk.kiosk.entity.UploadFile;
 import project.kiosk.kiosk.repository.FileRepository;
 import project.kiosk.kiosk.service.FileService;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor

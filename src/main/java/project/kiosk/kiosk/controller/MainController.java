@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.kiosk.kiosk.dto.CartDTO;
 import project.kiosk.kiosk.dto.OrderDTO;
+import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
@@ -56,7 +57,7 @@ public class MainController {
 
         log.info("add Item 호출");
 
-        Item findItem = itemService.findItem(itemNo);
+        ItemResponseDto findItem = itemService.findItem(itemNo);
 
         CartDTO cart = new CartDTO();
         cart.setItem(findItem);

@@ -23,7 +23,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     List<Member> findByRoleLike(Role role);
 
-    @Transactional
     void deleteMemberByNo(Long no);
 
 }

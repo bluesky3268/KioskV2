@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <title>상품관리 페이지</title>
+</head>
+<body>
+
+<div class="manager">
+    <button type="button" class="btn btn-link"><a href="javascript:history.back(-1)">뒤로</a></button>
+    <a href="/admin/item" class="btn btn-primary">상품 등록</a>
+</div>
+
+<h2>상품 목록</h2>
+<div class="col-md-12">
+    <div class="col-md-8">
+        <table class="table table-horizontal table-bordered">
+            <thead>
+            <tr>
+                <th>상품번호</th>
+                <th>사진</th>
+                <th>상품명</th>
+                <th>가격</th>
+                <th>품절여부</th>
+                <th>기타</th>
+            </tr>
+            </thead>
+            <tbody th:each="item : ${items}">
+            <input type="hidden" th:value="${item.getMember().getNo()}" id="memberNo"/>
+            <input type="hidden" th:value="${item.getNo()}" id="itemNo"/>
+            <input type="hidden" th:value="${session.role}" id="role"/>
+            <td th:text="${item.no}" id="no">상품번호</td>
+            <td><img th:each="file : ${item.getImg()}" th:src="|/api/itemImages/${file.getSaveName()}|" width="100" height="50"/></td>
+            <td th:text="${item.getItemName()}" >상품명</td>
+            <td th:text="${item.getPrice()}">가격</td>
+            <td th:if="${item.isSoldOut.toString().equals('false')}">판매중</td>
+            <td th:unless="${item.isSoldOut.toString().equals('false')}">품절</td>
+            <td>
+                <a th:href="@{/admin/item/{itemNo}(itemNo=${item.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>
+                <button type="button" class="btn btn-danger" id="btn_item_delete">삭제</button>
+            </td>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $('#btn_item_delete').click(function(){
+
+            var itemNo = $('#itemNo').val();
+            var memberNo = $('#memberNo').val();
+            var role= $('#role').val();
+
+            $.ajax({
+                type:'DELETE',
+                url: '/api/item/' + itemNo,
+                dataType:'json',
+                contentType:'application/json; charset=UTF-8',
+                success: function () {
+                    alert('성공적으로 삭제되었습니다.');
+                    if(role === 'MANAGER'){
+                        window.location.href = '/admin/items/' + memberNo;
+                    }else if (role === 'SUPERVISOR') {
+                        window.location.href = '/admin/items';
+                    }
+                },
+                error:function(error){
+                    alert(JSON.stringify(error))
+                }
+            });
+
+        });
+    });
+</script>
+</body>
+</html>

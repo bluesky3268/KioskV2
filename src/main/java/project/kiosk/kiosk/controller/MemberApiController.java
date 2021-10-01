@@ -23,34 +23,11 @@ import java.util.List;
 
 @Slf4j
 @Controller
-@RequestMapping("/admin")
 @RequiredArgsConstructor
-public class MemberController {
+@RequestMapping("/api")
+public class MemberApiController {
 
     private final MemberService memberService;
-
-    @GetMapping()
-    public String adminMain() {
-        return "admin/adminMain";
-    }
-
-    @GetMapping("/member")
-    public String addForm() {
-        return "/admin/joinForm";
-    }
-
-    @PostMapping("/member")
-    public String addMember(@ModelAttribute @Validated MemberJoinDTO memberJoin, BindingResult bindingResult) {
-//        log.info("memberJoin : {}, {}, {}, {}, {}", memberJoin.getId(), memberJoin.getPassword(), memberJoin.getLocation(), memberJoin.getRole(), memberJoin.getThumbImg());
-        if (!bindingResult.hasErrors()) {
-            memberService.join(memberJoin);
-            return "redirect:/admin";
-        }else{
-            log.info("bindingResult : {}",bindingResult.getAllErrors());
-        }
-        return "admin/joinForm";
-    }
-
 
     @ResponseBody
     @PostMapping("/duplicateCheck")
@@ -68,21 +45,16 @@ public class MemberController {
         }
     }
 
-    @GetMapping("/members")
-    public String memberList(Model model) {
-        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
-        model.addAttribute("members", members);
-        return "admin/memberList";
-    }
 
-    @GetMapping("/members/{no}")
+
+    @GetMapping("/member/{no}")
     public String editMemberForm(@PathVariable("no") Long memberNo, Model model) {
         Member findMember = memberService.findMemberByMemberNo(memberNo);
         model.addAttribute("member", findMember);
         return "admin/memberEditForm";
     }
 
-    @PatchMapping("/members/{no}")
+    @PatchMapping("/member/{no}")
     public String editMember(@PathVariable("no") Long memberNo, @RequestBody @Validated MemberUpdateDTO updateMember, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             return "admin/memberEditForm";
@@ -95,14 +67,14 @@ public class MemberController {
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/members/{no}")
+    @DeleteMapping("/member/{no}")
     public String deleteMember(@PathVariable("no") Long memberNo) {
         memberService.deleteMember(memberNo);
         return "redirect:/members";
     }
 
     @ResponseBody
-    @GetMapping("/images/{filename}")
+    @GetMapping("/memberImages/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
         Resource urlResource = memberService.downloadImage(filename);
         log.info("urlResource : {}", urlResource);

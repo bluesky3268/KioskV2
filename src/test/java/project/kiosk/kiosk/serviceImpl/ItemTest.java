@@ -5,10 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartHttpServletRequest;
 import org.springframework.transaction.annotation.Transactional;
 import project.kiosk.kiosk.dto.ItemAddDTO;
 import project.kiosk.kiosk.dto.ItemUpdateDTO;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
+import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
@@ -32,17 +34,17 @@ public class ItemTest {
     void 상품등록() {
         // 멤버 등록
         MemberJoinDTO member1 = new MemberJoinDTO("member1", "1234", "1234", "manager");
-        Member joinMember = memberService.joinInit(member1);
-        System.out.println("joinMember.getMemberId() = " + joinMember.getId());
+        Long memberNo = memberService.joinInit(member1);
+        System.out.println("ID : " + memberNo);
 
-        ItemAddDTO itemAddDTO1 = new ItemAddDTO("itemA", 10000, false, joinMember.getNo());
-        itemService.addItem(itemAddDTO1, joinMember.getId());
+        ItemAddDTO itemAddDTO1 = new ItemAddDTO("itemA", 10000, "false", memberNo);
+        itemService.addItem(itemAddDTO1, memberNo);
 
-        ItemAddDTO itemAddDTO2 = new ItemAddDTO("itemB", 20000, false, joinMember.getNo());
-        itemService.addItem(itemAddDTO2, joinMember.getId());
+        ItemAddDTO itemAddDTO2 = new ItemAddDTO("itemB", 20000, "false", memberNo);
+        itemService.addItem(itemAddDTO2, memberNo);
 
-        ItemAddDTO itemAddDTO3 = new ItemAddDTO("itemC", 30000, false, joinMember.getNo());
-        itemService.addItem(itemAddDTO3, joinMember.getId());
+        ItemAddDTO itemAddDTO3 = new ItemAddDTO("itemC", 30000, "false", memberNo);
+        itemService.addItem(itemAddDTO3, memberNo);
     }
 
     @Test
@@ -63,14 +65,16 @@ public class ItemTest {
 
     @Test
     void 상품_수정() {
+        MockMultipartHttpServletRequest multipartfile = new MockMultipartHttpServletRequest();
 
         // given
-        Item itemA = itemService.findItemByItemName("itemA");
-        ItemUpdateDTO update = new ItemUpdateDTO(50000, true);
+        Item findItem = itemService.findItemByItemName("itemA");
+        Long itemNo = findItem.getNo();
+
+        ItemUpdateDTO update = new ItemUpdateDTO(50000, "true");
 
         // when
-        itemService.editItem(itemA.getNo(), update);
-        Item findItem = itemService.findItemByItemName("itemA");
+//        Long no = itemService.editItem(itemNo, update);
 
         // then
         assertThat(findItem.getPrice()).isEqualTo(50000);
@@ -81,14 +85,14 @@ public class ItemTest {
     @Test
     void 상품삭제() {
         // given
-        Item itemA = itemService.findItemByItemName("itemA");
+        Item findItem = itemService.findItemByItemName("itemA");
 
         // when
-        itemService.deleteItem(itemA.getNo());
+        itemService.deleteItem(findItem.getNo());
 
         // then
-        Item findItem = itemService.findItem(itemA.getNo());
-        assertThat(findItem).isNull();
+        org.junit.jupiter.api.Assertions.assertThrows(NullPointerException.class, () -> itemService.findItem(findItem.getNo()));
+
     }
 
 

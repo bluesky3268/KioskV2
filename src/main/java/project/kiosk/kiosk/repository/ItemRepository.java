@@ -3,9 +3,11 @@ package project.kiosk.kiosk.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import project.kiosk.kiosk.entity.Item;
+import project.kiosk.kiosk.entity.Role;
 
 import java.util.List;
 
@@ -20,9 +22,9 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Page<Item> findByMemberNo(Long memberNo, Pageable pageable);
 
-    Page<Item> findAll(Pageable pageable);
+    Page<Item> findAllByMemberRoleLike(Role role, Pageable pageable);
 
-    @Transactional
-    void deleteByNo(Long no);
+//    Page<Item> findAllItems(Pageable pageable);
+
 
 }

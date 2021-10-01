@@ -2,14 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+
     <title>매장목록</title>
 </head>
 <body>
-매장 등록
-<button th:onclick="|location.href=@{/admin/member}|"></button>
+<button type="button" class="btn btn-link"><a href="javascript:history.back(-1)">뒤로</a></button>
+<a th:href="@{/admin/member}" class="btn btn-primary">매장 등록</a>
 <br/>
-매장 목록
-<table>
+<br/>
+<br/>
+
+<h2>매장 목록</h2>
+<table class="table table-horizontal table-bordered">
     <thead>
         <tr>
             <th>매장번호</th>
@@ -21,15 +27,11 @@
     </thead>
     <tbody th:each="member : ${members}">
             <td th:text="${member.getNo()}">매장번호</td>
-            <img th:each="file : ${member.getThumbImg()}" th:src="|/admin/images/${file.getSaveName()}|" width="150" height="100"/>
+            <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50"/></td>
             <td th:text="${member.getId()}">매장명</td>
             <td th:text="${member.getLocation()}">위치</td>
             <td th:text="${member.getRegDate()}">입점일자</td>
     </tbody>
 </table>
-
-
-
-
 </body>
 </html>

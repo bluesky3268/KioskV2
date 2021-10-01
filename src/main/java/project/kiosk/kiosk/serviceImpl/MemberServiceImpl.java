@@ -8,9 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+import project.kiosk.kiosk.service.FileService;
 import project.kiosk.kiosk.util.FileStore;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberLoginDTO;
@@ -29,16 +31,17 @@ import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileStore fileStore;
-    private final FileServiceImpl fileService;
+    private final FileService fileService;
 
     @Override
-    public String joinInit(MemberJoinDTO memberJoinDTO) {
+    public Long joinInit(MemberJoinDTO memberJoinDTO) {
         LocalDateTime regDate = LocalDateTime.now();
         String encodedPwd = passwordEncoder.encode(memberJoinDTO.getPassword());
 
@@ -57,11 +60,11 @@ public class MemberServiceImpl implements MemberService {
 
         log.info("savedMember : {}", savedMember.getId());
 
-        return savedMember.getId();
+        return savedMember.getNo();
     }
 
     @Override
-    public String join(MemberJoinDTO memberJoin) {
+    public Long join(MemberJoinDTO memberJoin) {
         if (memberJoin == null) {
             return null;
         }
@@ -101,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
 
             Member savedMember = memberRepository.save(member);
             log.info("등록 성공");
-            return savedMember.getId();
+            return savedMember.getNo();
         }
         return null;
     }

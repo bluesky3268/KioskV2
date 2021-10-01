@@ -1,5 +1,6 @@
 package project.kiosk.kiosk.entity;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -49,6 +50,7 @@ public class Member {
         this.role = role;
     }
 
+    @Builder
     public Member(String id, String password, @Nullable String location, LocalDateTime regDate, Role role, @Nullable UploadFile thumbImg) {
         this.id = id;
         this.password = password;

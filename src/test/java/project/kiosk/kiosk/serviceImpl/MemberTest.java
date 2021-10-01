@@ -42,8 +42,8 @@ class MemberTest {
     @BeforeEach
     void 회원등록() {
         MemberJoinDTO member1 = new MemberJoinDTO("member1", "1234", "1234", "manager");
-        Member joinMember = memberService.joinInit(member1);
-        System.out.println("joinMember.getMemberId() = " + joinMember.getId());
+        Long no = memberService.joinInit(member1);
+        System.out.println("joinMember.getMemberId() = " + no);
     }
 
     @Test
@@ -57,10 +57,10 @@ class MemberTest {
         MemberLoginDTO loginMember = new MemberLoginDTO("member1", "1234");
 
         // when
-        Member login = memberService.login(loginMember);
+        String loginId = memberService.login(loginMember);
 
-        if (login != null) {
-            session.setAttribute("loggedIn", login.getId());
+        if (loginId != null) {
+            session.setAttribute("loggedIn", loginId);
         }
 
         // then

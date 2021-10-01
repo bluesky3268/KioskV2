@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+  <link rel="stylesheet" href="/css/join.css">
+  <script src="/js/jquery-3.6.0.min.js"></script>
+  <title>상품 등록 화면</title>
+</head>
+<body>
+<header>상품 등록</header>
+  <section>
+    <form enctype="multipart/form-data" method="post" action="/admin/items">
+        <div class="container">
+            <div class="join_input">
+              <article for="memberId">매장명</article>
+              <div id="memberId" th:if="${session.role.toString().equals('MANAGER')}" th:text="${session.loggedIn}"></div>
+              <div name ="memberId" th:unless="${session.role.toString().equals('MANAGER')}">
+                  <select th:each="member:${members}">
+                      <option th:text="${member.getId()}" th:value="${member.getId()}"></option>
+                  </select>
+              </div>
+            </div>
+            <div class="join_input">
+              <article for="itemName">상품명</article>
+              <input type="text" id="itemName" name = "itemName" placeholder="상품명 입력하세요">
+            </div>
+            <div class="join_input">
+              <article for="price">가격</article>
+              <input type="text" id="price" name="price" placeholder="가격을 입력하세요">
+            </div>
+            <div class="join_input">
+              <article>품절여부</article>
+              <select name ="isSoldOut">
+                  <option value="false">판매가능</option>
+                  <option value="true">품절</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <article for="thumbImg">상품 사진 업로드</article>
+              <div><input type="file" id="img" name="img" multiple="multiple"></div>
+            </div>
+        </div>
+        <button type="submit" class="join_btn" id="btn-saveItem">등록</button>
+        <button type="button" class="go_back"><a href="javascript:history.back(-1)">취소</a></button>
+    </form>
+  </section>
+<!--<script type="text/javascript">-->
+<!--    $(function(){-->
+<!--        $('#btn-saveItem').click(function(){-->
+<!--            // var data = {-->
+<!--            //     memberId: $('#memberId').val(),-->
+<!--            //     itemName: $('#itemName').val(),-->
+<!--            //     price: $('#price').val(),-->
+<!--            //     isSoldOut:$('#isSoldOut').val()-->
+<!--            // };-->
+<!--            // thumbImg: $('#thumbImg').val()-->
+
+<!--            $.ajax({-->
+<!--                async:true,-->
+<!--                type:'POST',-->
+<!--                url:'/api/items',-->
+<!--                // data: JSON.stringify(data),-->
+<!--                // dataType:'json',-->
+<!--                // contentType:'application/x-www-form-urlencoded; charset=UTF-8',-->
+<!--                success: function () {-->
+<!--                    alert('상품이 성공적으로 등록되었습니다.');-->
+<!--                    window.location.href='/admin';-->
+<!--                },-->
+<!--                error:function(){-->
+<!--                    alert('상품 등록에 실패했습니다.');-->
+<!--                }-->
+<!--            });-->
+
+<!--        });-->
+<!--    });-->
+<!--</script>-->
+</body>
+</html>

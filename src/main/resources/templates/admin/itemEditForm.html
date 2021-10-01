@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/join.css">
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <title>상품 수정 화면</title>
+</head>
+<body>
+<header>상품 수정</header>
+<section>
+    <form enctype="multipart/form-data" id="form">
+        <div class="container">
+            <div class="join_input">
+                <article for="memberId">매장명</article>
+                    <input type="text" id="memberName" name = "memberName" th:value="${item.memberId}" readonly style="color: dimgray"/>
+                    <input type="hidden" id="itemNo" th:value="${item.no}">
+                    <input type="hidden" id="memberNo" th:value="${memberNo}">
+                    <input type="hidden" id="role" th:value="${session.role}">
+            </div>
+            <div class="join_input">
+                <article for="itemName">상품명</article>
+                <input type="text" id="itemName" name = "itemName" th:value="${item.itemName}" readonly style="color: dimgray"/>
+            </div>
+            <div class="join_input">
+                <article for="price">가격</article>
+                <input type="text" id="price" name="price" th:value="${item.price}">
+            </div>
+            <div class="join_input">
+                <article>품절여부</article>
+                <select name ="isSoldOut" id="isSoldOut">
+                    <option value=false>판매가능</option>
+                    <option value=true>품절</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <article for="thumbImg">상품 사진 업로드</article>
+                <td><img th:each="file : ${item.getThumbImg()}" th:src="|/api/itemImages/${file.getSaveName()}|" width="100" height="50"/></td><br/>
+                첨부파일: <a th:if="${file}" th:href="|/upload/${item.no}|" th:text="${file.getOriginalName()}" /><br/>
+                <div><input type="file" id="img" name="img" multiple="multiple"></div>
+            </div>
+        </div>
+        <button type="button" class="join_btn" id="btn_update_item">수정완료</button>
+        <button type="button" class="go_back"><a href="javascript:history.back(-1)">취소</a></button>
+    </form>
+</section>
+
+<script type="text/javascript">
+    $(function(){
+        $('#btn_update_item').click(function(){
+            var soldOut = $('select[name=isSoldOut]').val()
+            var data = {
+                price: $('#price').val(),
+                isSoldOut: soldOut
+            };
+            var itemNo = $('#itemNo').val();
+            var memberNo = $('#memberNo').val();
+            var role = $('#role').val();
+
+            var price = $('#price').val();
+            var img = $('#img').val();
+            var isSoldOut = $('#isSoldOut').val();
+
+            if (price == null || price == "" || price == undefined) {
+                alert('가격을 입력해주세요.');
+                $('#price').focus();
+                return false;
+            }
+            if (isSoldOut == null || isSoldOut == "" || isSoldOut == undefined) {
+                alert('품절여부를 선택해주세요.');
+                $('#isSoldOut').focus();
+                return false;
+            }
+            if (img == null || img == "" || img == undefined) {
+                alert('이미지를 등록해주세요.');
+                $('#img').focus();
+                return false;
+            }
+
+            var form =$('#form')[0];
+            var formData = new FormData(form);
+
+            formData.append('img', $('#img'));
+            formData.append('key', new Blob([JSON.stringify(data)] , {type: "application/json"}));
+
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/item/' + itemNo,
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function(){
+                    alert("성공적으로 수정되었습니다.");
+                    if(role === 'MANAGER'){
+                        window.location.href = '/admin/items/' + memberNo;
+                    }else if (role === 'SUPERVISOR') {
+                        window.location.href = '/admin/items';
+                    }
+                },
+                error: function (error) {
+                    alert(JSON.stringify(error));
+                }
+            });
+
+        });
+    });
+</script>
+</body>
+</html>

@@ -16,9 +16,9 @@ import java.util.List;
 
 public interface MemberService {
 
-    String joinInit(MemberJoinDTO memberJoinDTO);
+    Long joinInit(MemberJoinDTO memberJoinDTO);
 
-    String join(MemberJoinDTO memberJoinDTO);
+    Long join(MemberJoinDTO memberJoinDTO);
 
     String login(MemberLoginDTO memberLoginDTO);
 
