@@ -19,7 +19,7 @@ public interface MemberService {
 
     Long joinInit(MemberJoinDTO memberJoinDTO);
 
-    Long join(MemberJoinDTO memberJoinDTO);
+    Long join(MemberJoinDTO memberJoinDTO, MultipartFile multipartFile);
 
     String login(MemberLoginDTO memberLoginDTO);
 

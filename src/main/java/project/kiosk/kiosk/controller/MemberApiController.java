@@ -54,18 +54,30 @@ public class MemberApiController {
         }
     }
 
+    @PostMapping("/member")
+    public Long addMember(@RequestPart(value = "key") @Validated MemberJoinDTO memberJoin, BindingResult bindingResult,
+                          @RequestPart(value = "img") MultipartFile img) {
+
+        Long result = 0L;
+        if (!bindingResult.hasErrors()) {
+            result = memberService.join(memberJoin, img);
+        } else {
+            log.info("bindingResult : {}", bindingResult.getAllErrors());
+        }
+        return result;
+    }
+
     @PatchMapping("/member/{no}")
     public Long editMember(@PathVariable("no") Long memberNo, @RequestPart(value = "key") @Validated MemberUpdateDTO updateMember, BindingResult bindingResult,
-                                     @RequestPart(value = "img") MultipartFile img, Model model) {
-        log.info("=== memberEdit call ===");
-        log.info("updateMember : {}, {}, {}", updateMember.getPassword(), updateMember.getLocation(), updateMember.getRole());
-        log.info("img : {}", img.getOriginalFilename());
+                           @RequestPart(value = "img") MultipartFile img, Model model) {
+        Long no = 0L;
         if (!bindingResult.hasErrors()) {
-            memberService.updateMember(memberNo, updateMember, img);
-            return memberNo;
+            Member member = memberService.updateMember(memberNo, updateMember, img);
+            no = member.getNo();
+        } else {
+            log.info("bindingResult : {}", bindingResult.getAllErrors());
         }
-        return 0L;
-
+        return no;
     }
 
     @DeleteMapping("/member/{no}")
@@ -74,8 +86,33 @@ public class MemberApiController {
         return memberNo;
     }
 
+    @GetMapping("/member/role/{role}")
+    public List<Member> findMembersByRole(@PathVariable("role") String role, Model model) {
+
+        List<Member> result = null;
+        if (role.equals("supervisor")) {
+            result = memberService.findMemberByRole(Role.SUPERVISOR);
+            model.addAttribute("result", result);
+            for (Member member : result) {
+                log.info("supervisor : {}, {}", member.getNo(), member.getId());
+            }
+        } else {
+            result = memberService.findMemberByRole(Role.MANAGER);
+            model.addAttribute("result", result);
+            for (Member member : result) {
+                log.info("manager : {}, {}", member.getNo(), member.getId());
+            }
+        }
+        for (Member member : result) {
+            member.getRole();
+        }
+        return result;
+
+    }
+
     @GetMapping("/memberImages/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
+
         Resource urlResource = memberService.downloadImage(filename);
         log.info("urlResource : {}", urlResource);
 

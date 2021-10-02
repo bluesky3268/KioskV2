@@ -12,7 +12,7 @@
     [ 매장 등록 ]
 </header>
 <section class="col-md-12">
-    <form id="join" name="join" method="post" action="/admin/member" enctype="multipart/form-data">
+    <form id="join" name="join" enctype="multipart/form-data">
         <div class="container">
             <article>매장 명</article>
             <div class="shopName">
@@ -46,11 +46,11 @@
             <br/>
             <br/>
             <article class="join_input">파일 업로드
-            <input type="file" id="thumbImg" name="thumbImg" multiple="multiple"></article>
+            <input type="file" id="img" name="img" multiple="multiple"></article>
         </div>
         <br/>
         <br/>
-            <button type="submit" id="join_btn btn btn-primary">회원가입</button>
+            <button type="button" class="btn btn-primary" id="btn_join">회원가입</button>
             <button type="button" class="go_back"><a href="javascript:history.back(-1)">뒤로</a></button>
 
     </form>
@@ -101,19 +101,22 @@
     }
 
     $(function (){
-        $('#join_btn').click(function(){
+        $('#btn_join').click(function(){
             var username = $('#id').val();
             var duplicateCheck = $('#duplicate_check').attr('check');
             var password = $('#password').val();
             var pwdConfirm = $('#passwordConfirm').val();
+            var location = $('#location').val();
+            var role = $('#role').val();
+
 
             if(username == null || username == undefined || username == ""){
-                alert('가게 이름을 입력해주세요.');
+                alert('매장명을 입력해주세요.');
                 $('#id').focus();
                 return false;
             }
             if(duplicateCheck == "" || duplicateCheck == 'N'){
-                alert('이름 중복확인을 해주세요');
+                alert('매장명 중복확인을 해주세요');
                 $('#duplicate_check').focus();
                 return false;
             }
@@ -133,7 +136,35 @@
                 return false;
             }
 
-            // $('#join').submit();
+            var data = {
+                id: username,
+                password: password,
+                passwordConfirm: pwdConfirm,
+                location: location,
+                role:role
+            };
+
+
+            var form =$('#join')[0];
+            var formData = new FormData(form);
+
+            formData.append("img", $('#img'));
+            formData.append('key', new Blob([JSON.stringify(data)] , {type: "application/json"}));
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/member',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function(){
+                    alert("성공적으로 등록되었습니다.");
+                    window.location.href = '/admin/members';
+                },
+                error: function (error) {
+                    alert(JSON.stringify(error));
+                }
+            });
 
         })
     })

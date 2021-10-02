@@ -26,23 +26,21 @@ public class init {
     @PostConstruct
     public void init(){
         log.info("PostConstructor init() ");
-        List<Member> supervisorList = memberService.findMemberByRole(Role.SUPERVISOR);
-
-        if (supervisorList.isEmpty()) {
+        List<Member> supervisorList = null;
+        try {
+            supervisorList = memberService.findMemberByRole(Role.SUPERVISOR);
+        } catch (NullPointerException e) {
             MemberJoinDTO member = new MemberJoinDTO("ROOT", "1234", "1234", "supervisor");
             MemberJoinDTO member2 = new MemberJoinDTO("SAMPLE", "1234", "1234", "manager");
             log.info("joinInit()호출");
             Long memberNo = memberService.joinInit(member);
             Long member2No = memberService.joinInit(member2);
 
-
             Member sample = memberService.findMemberById("SAMPLE");
 
             ItemAddDTO itemAddDTO = new ItemAddDTO("item", 10000, "false", sample.getNo());
             itemService.addItemInit(itemAddDTO, member2No);
-
-        }else{
-            return;
         }
+
     }
 }

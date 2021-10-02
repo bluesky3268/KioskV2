@@ -9,12 +9,20 @@
 </head>
 <body>
 <button type="button" class="btn btn-link"><a href="javascript:history.back(-1)">뒤로</a></button>
+<button type="button" class="btn btn-link"><a th:href="@{/admin}">메인</a></button>
 <a th:href="@{/admin/member}" class="btn btn-primary">매장 등록</a>
 <br/>
 <br/>
 <br/>
 
 <h2>매장 목록</h2>
+<div>
+    <select id="select_role">
+        <option value="supervisor">supervisor</option>
+        <option value="manager">manager</option>
+    </select>
+    <button type="button" id="btn_search_role">검색</button>
+</div>
 <table class="table table-horizontal table-bordered">
     <thead>
         <tr>
@@ -27,18 +35,33 @@
 
         </tr>
     </thead>
-    <tbody th:each="member : ${members}">
-            <td th:text="${member.getNo()}">매장번호</td>
-            <input type="hidden" id="memberNo" th:value="${member.no}"/>
-            <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50"/></td>
-            <td th:text="${member.getId()}">매장명</td>
-            <td th:text="${member.getLocation()}">위치</td>
-            <td th:text="${member.getRegDate()}">입점일자</td>
-            <td>
-                <a th:href="@{/admin/member/{memberNo}(memberNo=${member.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>
-                <button type="button" class="btn btn-danger" id="btn_member_delete">삭제</button>
-            </td>
+<!--    <tbody th:unless="${result} == null" th:each="member : ${result}">-->
+<!--            <td th:text="${member.getNo()}" id="member_No">매장번호</td>-->
+<!--            <input type="hidden" id="memberNo" th:value="${member.no}"/>-->
+<!--            <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50" id="img"/></td>-->
+<!--            <td th:text="${member.getId()}" id="memberName">매장명</td>-->
+<!--            <td th:text="${member.getLocation()}" id="location">위치</td>-->
+<!--            <td th:text="${member.getRegDate()}" id="regDate">입점일자</td>-->
+<!--            <td>-->
+<!--                <a th:href="@{/admin/member/{memberNo}(memberNo=${member.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>-->
+<!--                <button type="button" class="btn btn-danger" id="btn_member_delete">삭제</button>-->
+<!--            </td>-->
+<!--    </tbody>-->
+    <tbody class="tbody" th:if="${result} == null" th:each="member : ${members}">
+        <td th:text="${member.getNo()}" id="member_No">매장번호</td>
+        <input type="hidden" id="memberNo" th:value="${member.no}"/>
+        <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50" id="img"/></td>
+        <td th:text="${member.getId()}" id="memberName">매장명</td>
+        <td th:text="${member.getLocation()}" id="location">위치</td>
+        <td th:text="${member.getRegDate()}" id="regDate">입점일자</td>
+        <td>
+            <a th:href="@{/admin/member/{memberNo}(memberNo=${member.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>
+            <button type="button" class="btn btn-danger" id="btn_member_delete">삭제</button>
+        </td>
     </tbody>
+
+
+
 </table>
 <script type="text/javascript">
     $(function(){
@@ -55,13 +78,45 @@
                     alert('성공적으로 삭제되었습니다.');
                     window.location.href = '/admin/members';
                 },
-                error:function(error){
-                    alert(JSON.stringify(error))
+                error:function(){
+                    alert('삭제에 실패했습니다. 다시 시도해 주세요.');
                 }
             });
 
         });
     });
+
+    $(function (){
+       $('#btn_search_role').click(function (){
+           var role = $('#select_role').val();
+
+           $.ajax({
+               type:'GET',
+               url: '/api/member/role/' + role,
+               dataType:'json',
+               contentType:'application/json; charset=UTF-8',
+               success: output
+           });
+       });
+    });
+    function output(result){
+        var memberNo = "";
+        var img = "";
+        var memberName = "";
+        var location = "";
+        var regDate = "";
+        $.each(result, function(key, data){
+            memberNo = data.no;
+            memberName = data.id;
+            location = data.location;
+            regDate = data.regDate;
+            console.log(data);
+            console.log("regDate : " + data.regDate);
+            console.log("img_save : " + data.thumbImg);
+            // console.log("img_original : " + data.thumbImg.originalName);
+        });
+        // $(".tbody").append(str);
+    }
 </script>
 </body>
 </html>

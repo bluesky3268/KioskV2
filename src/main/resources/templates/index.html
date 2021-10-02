@@ -2,20 +2,49 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>메인페이지</title>
+    <title>Main</title>
+    <link rel='stylesheet' type='text/css' media='screen' href='/css/main.css'>
 </head>
 <body>
-
-<header>[ FOOD COURT ]</header>
-매장을 먼저 선택해 주세요
-<ul>
-    <li th:each="manager:${managers}">
-        <a th:href="@{/{id} (id=${manager.getNo()})}">
-            <div th:text="${manager.id}"></div>
-            <div th:text="${manager.getThumbImg()}"></div>
-        </a>
-
-    </li>
-</ul>
+<header>
+    <h1 class="headerTitle">FOOD COURT</h1>
+</header>
+<nav>
+    <ul>
+        <li class="arrow"><a href="#">[ < ]</a></li>
+        <li th:each="member:${memberList}"><a href="#" th:text="${member.getUsername}"></a></li>
+        <li><a href="#">스시앤</a></li>
+        <li><a href="#">아비꼬</a></li>
+        <li><a href="#">청년다방</a></li>
+        <li class="arrow"><a href="#"> [ > ] </a></li>
+    </ul>
+</nav>
+<div class="container_menu">
+    <section>
+        <ul>
+            <li th:each="manager:${managers}">
+                <a th:href="@{/{id} (id=${manager.getNo()})}">
+                    <div th:text="${manager.id}"></div>
+                    <div th:text="${manager.getThumbImg()}"></div>
+                </a>
+            </li>
+        </ul>
+<!--        <article>-->
+<!--            <div th:each="item : ${itemList}">-->
+<!--                <div class="menu_img"><a href="#" th:text="item.img">음식이미지</a></div>-->
+<!--                <div class="menu_title" th:text="item.itemName">음식이름</div>-->
+<!--                <div class="price" th:text="item.price">9,000원</div>-->
+<!--            </div>-->
+<!--        </article>-->
+    </section>
+</div>
+<div class="container_info">
+    <article class="ordered_menu">
+        주문내역:
+    </article>
+    <article class="pay_price">
+        결제금액:
+    </article>
+</div>
 </body>
 </html>

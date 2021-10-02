@@ -65,8 +65,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Long join(MemberJoinDTO memberJoin) {
-        if (memberJoin == null) {
+    public Long join(MemberJoinDTO memberJoin, MultipartFile multipartFile) {
+        if (memberJoin == null || multipartFile.isEmpty()) {
             return null;
         }
 
@@ -77,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
 
             UploadFile uploadFile = null;
             try {
-                uploadFile = fileStore.saveFile(memberJoin.getImg());
+                uploadFile = fileStore.saveFile(multipartFile);
                 log.info("uploadFile 변환 성공 : {}, {}", uploadFile.getOriginalName(), uploadFile.getSaveName());
                 fileService.addFile(uploadFile);
                 log.info("uploadFile 저장 성공");
@@ -170,7 +170,13 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<Member> findMemberByRole(Role role) {
-        return memberRepository.findByRoleLike(role);
+
+        List<Member> result = memberRepository.findByRoleLike(role);
+        if (!result.isEmpty()) {
+            return result;
+        }else{
+            throw new NullPointerException();
+        }
     }
 
     @Override

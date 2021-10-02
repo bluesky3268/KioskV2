@@ -47,6 +47,7 @@ public class AdminPageController {
     public String memberList(Model model) {
         List<Member> members = memberService.findMemberByRole(Role.MANAGER);
         model.addAttribute("members", members);
+        model.addAttribute("result", null);
         return "admin/memberList";
     }
 
@@ -55,21 +56,6 @@ public class AdminPageController {
         return "/admin/joinForm";
     }
 
-
-    /**
-     * 매장 등록 : API로 바꿔야 함
-     */
-    @PostMapping("/member")
-    public String addMember(@ModelAttribute @Validated MemberJoinDTO memberJoin, BindingResult bindingResult) {
-//        log.info("memberJoin : {}, {}, {}, {}, {}", memberJoin.getId(), memberJoin.getPassword(), memberJoin.getLocation(), memberJoin.getRole(), memberJoin.getThumbImg());
-        if (!bindingResult.hasErrors()) {
-            memberService.join(memberJoin);
-            return "redirect:/admin";
-        }else{
-            log.info("bindingResult : {}",bindingResult.getAllErrors());
-        }
-        return "redirect:/admin/members";
-    }
 
     @GetMapping("/member/{no}")
     public String editMemberForm(@PathVariable("no") Long memberNo, Model model) {

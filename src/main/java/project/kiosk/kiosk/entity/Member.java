@@ -1,5 +1,6 @@
 package project.kiosk.kiosk.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,9 +43,11 @@ public class Member {
     @Nullable
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uploadFile_no")
+    @JsonIgnore
     private UploadFile thumbImg;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Item> items = new ArrayList<>();
 
     // 관리자 등록용 생성자
