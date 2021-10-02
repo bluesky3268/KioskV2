@@ -83,7 +83,7 @@ class MemberTest {
         MemberUpdateDTO update = new MemberUpdateDTO("1111", "z", "supervisor");
 
         // when
-        memberService.updateMember(member, update);
+//        memberService.updateMember(member, update);
 
         Member afterUpdate = memberService.findMemberById("member1");
 

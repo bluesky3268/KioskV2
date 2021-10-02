@@ -9,6 +9,8 @@ import org.springframework.lang.Nullable;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,6 +43,9 @@ public class Member {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "uploadFile_no")
     private UploadFile thumbImg;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    private List<Item> items = new ArrayList<>();
 
     // 관리자 등록용 생성자
     public Member(String id, String password, LocalDateTime regDate, Role role) {

@@ -28,15 +28,15 @@ public class MemberJoinDTO {
     private String role;
 
 //    @NotNull
-    private MultipartFile thumbImg;
+    private MultipartFile img;
 
-    public MemberJoinDTO(String id, String password, String passwordConfirm, String location, String role, MultipartFile thumbImg) {
+    public MemberJoinDTO(String id, String password, String passwordConfirm, String location, String role, MultipartFile img) {
         this.id = id;
         this.password = password;
         this.passwordConfirm = passwordConfirm;
         this.location = location;
         this.role = role;
-        this.thumbImg = thumbImg;
+        this.img = img;
     }
 
     // 관리자 등록용 생성자

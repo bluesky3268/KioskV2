@@ -33,6 +33,8 @@ public class AdminPageController {
     private final ItemService itemService;
     private final MemberService memberService;
 
+    //==== Member ====
+
     @GetMapping()
     public String adminMain(Model model, HttpSession session) {
         String id = String.valueOf(session.getAttribute("loggedIn"));
@@ -69,6 +71,15 @@ public class AdminPageController {
         return "redirect:/admin/members";
     }
 
+    @GetMapping("/member/{no}")
+    public String editMemberForm(@PathVariable("no") Long memberNo, Model model) {
+        Member findMember = memberService.findMemberByMemberNo(memberNo);
+        model.addAttribute("member", findMember);
+        model.addAttribute("file", findMember.getThumbImg());
+        return "admin/memberEditForm";
+    }
+
+    //==== item ====
 
     @GetMapping("/item")
     public String itemAddForm(Model model) {

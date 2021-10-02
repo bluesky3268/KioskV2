@@ -4,30 +4,39 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriUtils;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberUpdateDTO;
+import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
 import project.kiosk.kiosk.entity.UploadFile;
 import project.kiosk.kiosk.service.MemberService;
+import project.kiosk.kiosk.util.FileStore;
 
 import java.net.MalformedURLException;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
 public class MemberApiController {
 
     private final MemberService memberService;
+    private final FileStore fileStore;
 
     @ResponseBody
     @PostMapping("/duplicateCheck")
@@ -45,35 +54,26 @@ public class MemberApiController {
         }
     }
 
-
-
-    @GetMapping("/member/{no}")
-    public String editMemberForm(@PathVariable("no") Long memberNo, Model model) {
-        Member findMember = memberService.findMemberByMemberNo(memberNo);
-        model.addAttribute("member", findMember);
-        return "admin/memberEditForm";
-    }
-
     @PatchMapping("/member/{no}")
-    public String editMember(@PathVariable("no") Long memberNo, @RequestBody @Validated MemberUpdateDTO updateMember, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            return "admin/memberEditForm";
+    public Long editMember(@PathVariable("no") Long memberNo, @RequestPart(value = "key") @Validated MemberUpdateDTO updateMember, BindingResult bindingResult,
+                                     @RequestPart(value = "img") MultipartFile img, Model model) {
+        log.info("=== memberEdit call ===");
+        log.info("updateMember : {}, {}, {}", updateMember.getPassword(), updateMember.getLocation(), updateMember.getRole());
+        log.info("img : {}", img.getOriginalFilename());
+        if (!bindingResult.hasErrors()) {
+            memberService.updateMember(memberNo, updateMember, img);
+            return memberNo;
         }
+        return 0L;
 
-        Member findMember = memberService.findMemberByMemberNo(memberNo);
-        Member updatedMember = memberService.updateMember(findMember, updateMember);
-
-        model.addAttribute("update", updatedMember);
-        return "redirect:/admin";
     }
 
     @DeleteMapping("/member/{no}")
-    public String deleteMember(@PathVariable("no") Long memberNo) {
+    public Long deleteMember(@PathVariable("no") Long memberNo) {
         memberService.deleteMember(memberNo);
-        return "redirect:/members";
+        return memberNo;
     }
 
-    @ResponseBody
     @GetMapping("/memberImages/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
         Resource urlResource = memberService.downloadImage(filename);
@@ -81,4 +81,23 @@ public class MemberApiController {
 
         return urlResource;
     }
+
+    @GetMapping("/upload/{memberNo}")
+    public ResponseEntity<Resource> downloadAttach(@PathVariable Long memberNo) throws MalformedURLException {
+        Member findMember = memberService.findMemberByMemberNo(memberNo);
+        String saveName = findMember.getThumbImg().getSaveName();
+        String originalName = findMember.getThumbImg().getOriginalName();
+
+        UrlResource urlResource = new UrlResource("file:" + fileStore.getFullPath(saveName));
+
+        log.info("uploadFileName = {}", originalName);
+
+        String encodedUploadFileName = UriUtils.encode(originalName, StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=\"" + encodedUploadFileName + "\"";
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+                .body(urlResource);
+    }
+
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/join.css">
@@ -13,18 +13,18 @@
         <div class="container">
             <div class="join_input">
                 <article for="memberId">매장명</article>
-                    <input type="text" id="memberName" name = "memberName" th:value="${item.memberId}" readonly style="color: dimgray"/>
-                    <input type="hidden" id="itemNo" th:value="${item.no}">
+                    <input type="text" id="memberName" name = "memberName" th:value="${item.getMemberId()}" readonly style="color: dimgray"/>
+                    <input type="hidden" id="itemNo" th:value="${item.getNo()}">
                     <input type="hidden" id="memberNo" th:value="${memberNo}">
                     <input type="hidden" id="role" th:value="${session.role}">
             </div>
             <div class="join_input">
                 <article for="itemName">상품명</article>
-                <input type="text" id="itemName" name = "itemName" th:value="${item.itemName}" readonly style="color: dimgray"/>
+                <input type="text" id="itemName" name = "itemName" th:value="${item.getItemName()}" readonly style="color: dimgray"/>
             </div>
             <div class="join_input">
                 <article for="price">가격</article>
-                <input type="text" id="price" name="price" th:value="${item.price}">
+                <input type="text" id="price" name="price" th:value="${item.getPrice()}">
             </div>
             <div class="join_input">
                 <article>품절여부</article>
@@ -36,7 +36,7 @@
             <div class="form-group">
                 <article for="thumbImg">상품 사진 업로드</article>
                 <td><img th:each="file : ${item.getThumbImg()}" th:src="|/api/itemImages/${file.getSaveName()}|" width="100" height="50"/></td><br/>
-                첨부파일: <a th:if="${file}" th:href="|/upload/${item.no}|" th:text="${file.getOriginalName()}" /><br/>
+                첨부파일: <a th:if="${file}" th:href="|/upload/${item.getNo()}|" th:text="${file.getOriginalName()}" /><br/>
                 <div><input type="file" id="img" name="img" multiple="multiple"></div>
             </div>
         </div>

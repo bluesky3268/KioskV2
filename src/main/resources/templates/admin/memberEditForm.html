@@ -1,10 +1,128 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>매장 정보 수정</title>
 </head>
 <body>
-매장 정보 수정 화면
+<!DOCTYPE html>
+<html>
+<head>
+    <meta contentType="application/json; charset=UTF-8">
+    <title>등록화면</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='/css/join.css'>
+    <script src="/js/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<header>
+    [ 매장 등록 ]
+</header>
+<section class="col-md-12">
+    <form id="form" name="join" enctype="multipart/form-data">
+        <div class="container">
+            <article>매장 명</article>
+            <div class="shopName">
+                <article class="join_input_id"><input type="text" id="id" name="id" th:value="${member.getId()}" readonly style="color: dimgray"></article>
+                <input type="hidden" th:value="${member.getNo()}" id="memberNo"/>
+            </div>
+            <article>암호</article>
+            <article class="join_input"><input type="password" id="password" name="password" placeholder="암호 입력"></article>
+            <article>암호확인</article>
+            <article class="join_input"><input type="password" id="passwordConfirm" name="passwordConfirm" placeholder="암호 확인" onkeyup="pwdCheck()"></article>
+            <div id="checkPwd"></div>
+            <article class="join_input">권한등급
+                <select id="role" name="role">
+                    <option value="supervisor">supervisor</option>
+                    <option value="manager" selected>manager</option>
+                </select>
+            </article>
+            <br/>
+            <article class="join_input">매장위치
+                <select id="location" name="location">
+                    <option value="A1" selected>-</option>
+                    <option value="A1" >A1</option>
+                    <option value="A2" >A2</option>
+                    <option value="A3">A3</option>
+                    <option value="B1" >B1</option>
+                    <option value="B2">B2</option>
+                    <option value="B3" >B3</option>
+                </select>
+            </article>
+            <br/>
+            <br/>
+            <div class="form-group">
+                <article for="thumbImg">상품 사진 업로드</article>
+                <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50"/></td><br/>
+                첨부파일: <a th:if="${file}" th:href="|/upload/${member.getNo()}|" th:text="${file.getOriginalName()}" /><br/>
+                <div><input type="file" id="img" name="img" multiple="multiple"></div>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <button type="button" class="join_btn btn btn-primary" id="btn_update_member">수정완료</button>
+        <button type="button" class="go_back"><a href="javascript:history.back(-1)">뒤로</a></button>
+
+    </form>
+</section>
+
+<script type="text/javascript">
+
+    function pwdCheck() {
+        var f1 = document.forms[0];
+        var pwd1 = f1.password.value;
+        var pwd2 = f1.passwordConfirm.value;
+        if (pwd1 != pwd2) {
+            document.getElementById('checkPwd').style.color="red";
+            document.getElementById('checkPwd').innerHTML = "동일한 암호를 입력해 주세요.";
+        }else{
+            document.getElementById('checkPwd').style.color = "blue";
+            document.getElementById('checkPwd').innerHTML = "암호가 정상적으로 입력되었습니다.";
+        }
+    }
+
+    $(function(){
+        $('#btn_update_member').click(function(){
+            var location = $('select[name=location]').val();
+            var role = $('select[name=role]').val();
+            var data = {
+                password: $('#password').val(),
+                location: location,
+                role: role
+            };
+            //
+            // var img = $('#img').val();
+            // if (img == null || img == "" || img == undefined) {
+            //     alert('이미지를 등록해주세요.');
+            //     $('#img').focus();
+            //     return false;
+            // }
+
+            var memberNo = $('#memberNo').val();
+
+            var form =$('#form')[0];
+            var formData = new FormData(form);
+
+            formData.append("img", $('#img'));
+            formData.append('key', new Blob([JSON.stringify(data)] , {type: "application/json"}));
+
+            $.ajax({
+                type: 'PATCH',
+                url: '/api/member/' + memberNo,
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function(){
+                    alert("성공적으로 수정되었습니다.");
+                    window.location.href = '/admin/members';
+                },
+                error: function (error) {
+                    alert(JSON.stringify(error));
+                }
+            });
+
+        });
+    });
+</script>
 </body>
 </html>

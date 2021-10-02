@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import project.kiosk.kiosk.service.FileService;
 import project.kiosk.kiosk.util.FileStore;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
@@ -76,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
 
             UploadFile uploadFile = null;
             try {
-                uploadFile = fileStore.saveFile(memberJoin.getThumbImg());
+                uploadFile = fileStore.saveFile(memberJoin.getImg());
                 log.info("uploadFile 변환 성공 : {}, {}", uploadFile.getOriginalName(), uploadFile.getSaveName());
                 fileService.addFile(uploadFile);
                 log.info("uploadFile 저장 성공");
@@ -191,13 +192,19 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member updateMember(Member member, MemberUpdateDTO updateMember) {
+    public Member updateMember(Long memberNo, MemberUpdateDTO updateMember, MultipartFile multipartFile) {
 
-        String encodedPwd = passwordEncoder.encode(updateMember.getPassword());
+        Member member = memberRepository.findMemberByNo(memberNo);
 
-        if (updateMember.getThumbImg() != null) {
+        if (updateMember.getPassword() != null) {
+            String encodedPwd = passwordEncoder.encode(updateMember.getPassword());
+            member.setPassword(encodedPwd);
+        }
+
+        if (!multipartFile.isEmpty()) {
             try {
-                UploadFile newImg = fileStore.saveFile(updateMember.getThumbImg());
+                UploadFile newImg = fileStore.saveFile(multipartFile);
+                fileService.addFile(newImg);
                 member.setThumbImg(newImg);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -210,7 +217,6 @@ public class MemberServiceImpl implements MemberService {
         } else {
             role = Role.MANAGER;
         }
-        member.setPassword(encodedPwd);
         member.setLocation(updateMember.getLocation());
         member.setRole(role);
 

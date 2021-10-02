@@ -15,7 +15,7 @@ public class MemberUpdateDTO {
     private String password;
     private String location;
     private String role;
-    private MultipartFile thumbImg;
+    private MultipartFile img;
 
     // 테스트용 생성자
     public MemberUpdateDTO(String password, String location, String role) {

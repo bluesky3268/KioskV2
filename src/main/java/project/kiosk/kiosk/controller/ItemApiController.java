@@ -53,7 +53,8 @@ public class ItemApiController {
     }
 
     @PatchMapping("/item/{itemNo}")
-    public Long editItem(@PathVariable Long itemNo, @RequestPart(value="key") @Validated ItemUpdateDTO itemUpdate, BindingResult bindingResult, @RequestPart(value="img") MultipartFile img, Model model) {
+    public Long editItem(@PathVariable Long itemNo, @RequestPart(value="key") @Validated ItemUpdateDTO itemUpdate, BindingResult bindingResult,
+                         @RequestPart(value="img") MultipartFile img, Model model) {
 
         if (!bindingResult.hasErrors()) {
             itemService.editItem(itemNo, itemUpdate, img);

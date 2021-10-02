@@ -3,6 +3,7 @@ package project.kiosk.kiosk.service;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberLoginDTO;
 import project.kiosk.kiosk.dto.MemberUpdateDTO;
@@ -36,7 +37,7 @@ public interface MemberService {
 
     String logout(HttpSession session);
 
-    Member updateMember(Member member, MemberUpdateDTO updateMember);
+    Member updateMember(Long memberNo, MemberUpdateDTO updateMember, MultipartFile multipartFile);
 
     void deleteMember(Long memberNo);
 

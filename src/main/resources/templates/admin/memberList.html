@@ -23,15 +23,45 @@
             <th>매장명</th>
             <th>위치</th>
             <th>입점일자</th>
+            <th>기타</th>
+
         </tr>
     </thead>
     <tbody th:each="member : ${members}">
             <td th:text="${member.getNo()}">매장번호</td>
+            <input type="hidden" id="memberNo" th:value="${member.no}"/>
             <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50"/></td>
             <td th:text="${member.getId()}">매장명</td>
             <td th:text="${member.getLocation()}">위치</td>
             <td th:text="${member.getRegDate()}">입점일자</td>
+            <td>
+                <a th:href="@{/admin/member/{memberNo}(memberNo=${member.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>
+                <button type="button" class="btn btn-danger" id="btn_member_delete">삭제</button>
+            </td>
     </tbody>
 </table>
+<script type="text/javascript">
+    $(function(){
+        $('#btn_member_delete').click(function(){
+
+            var memberNo = $('#memberNo').val();
+
+            $.ajax({
+                type:'DELETE',
+                url: '/api/member/' + memberNo,
+                dataType:'json',
+                contentType:'application/json; charset=UTF-8',
+                success: function () {
+                    alert('성공적으로 삭제되었습니다.');
+                    window.location.href = '/admin/members';
+                },
+                error:function(error){
+                    alert(JSON.stringify(error))
+                }
+            });
+
+        });
+    });
+</script>
 </body>
 </html>

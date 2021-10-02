@@ -16,6 +16,12 @@ import java.util.UUID;
 @Data
 public class FileStore {
 
+    /**
+     * MultipartFile을 UploadFile 타입(원본이름, DB저장 이름)으로 변환, 지정된 경로에 파일을 저장
+     * -> FileRepository를 통해서 DB에 UploadFile을 저장하여 파일 관리
+     */
+
+
     @Value("${file.dir}")
     private String fileDir;
 
