@@ -17,7 +17,7 @@ public interface ItemService {
 
     Long addItemInit(ItemAddDTO itemAddDTO, Long memberNo);
 
-    Long addItem(ItemAddDTO itemAddDTO, Long memberNo);
+    Long addItem(ItemAddDTO itemAddDTO, MultipartFile multipartFile);
 
     Long editItem(Long no, ItemUpdateDTO itemUpdate, MultipartFile img);
 

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -28,6 +29,7 @@ public class Member {
     private String id;
 
     @NotNull
+    @JsonIgnore
     private String password;
 
     @Nullable
@@ -41,9 +43,8 @@ public class Member {
     private Role role;
 
     @Nullable
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "uploadFile_no")
-    @JsonIgnore
     private UploadFile thumbImg;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -58,7 +59,7 @@ public class Member {
         this.role = role;
     }
 
-    @Builder
+//    @Builder
     public Member(String id, String password, @Nullable String location, LocalDateTime regDate, Role role, @Nullable UploadFile thumbImg) {
         this.id = id;
         this.password = password;
@@ -67,6 +68,7 @@ public class Member {
         this.role = role;
         this.thumbImg = thumbImg;
     }
+
 
     @Override
     public String toString() {

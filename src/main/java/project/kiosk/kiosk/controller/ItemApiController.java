@@ -43,6 +43,19 @@ public class ItemApiController {
     private final MemberService memberService;
     private final FileStore fileStore;
 
+    @PostMapping("/item")
+    public Long itemAdd(@RequestPart(value="key") @Validated ItemAddDTO itemAdd, BindingResult bindingResult,
+                          @RequestPart(value = "img") MultipartFile img) {
+
+        Long itemNo = 0L;
+        if (!bindingResult.hasErrors()) {
+            itemNo = itemService.addItem(itemAdd, img);
+        }else{
+            log.info("bindingError : {}", bindingResult.getAllErrors());
+        }
+
+        return itemNo;
+    }
 
     @GetMapping("/item/{itemNo}")
     public ItemResponseDto itemDetail(@PathVariable Long itemNo, Model model) {
@@ -71,8 +84,16 @@ public class ItemApiController {
         return itemNo;
     }
 
+    @GetMapping("/items/{memberNo}")
+    public List<Item> itemsByMember(@PathVariable Long memberNo) {
+        Member member = memberService.findMemberByMemberNo(memberNo);
+        List<Item> items = member.getItems();
+        return items;
+    }
+
     @GetMapping("/itemImages/{filename}")
     public Resource downloadImage(@PathVariable String filename) throws MalformedURLException {
+
         Resource urlResource = itemService.downloadImage(filename);
         log.info("urlResource : {}", urlResource);
 

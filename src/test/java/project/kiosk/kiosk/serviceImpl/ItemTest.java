@@ -37,14 +37,14 @@ public class ItemTest {
         Long memberNo = memberService.joinInit(member1);
         System.out.println("ID : " + memberNo);
 
-        ItemAddDTO itemAddDTO1 = new ItemAddDTO("itemA", 10000, "false", memberNo);
-        itemService.addItem(itemAddDTO1, memberNo);
-
-        ItemAddDTO itemAddDTO2 = new ItemAddDTO("itemB", 20000, "false", memberNo);
-        itemService.addItem(itemAddDTO2, memberNo);
-
-        ItemAddDTO itemAddDTO3 = new ItemAddDTO("itemC", 30000, "false", memberNo);
-        itemService.addItem(itemAddDTO3, memberNo);
+//        ItemAddDTO itemAddDTO1 = new ItemAddDTO("itemA", 10000, "false", memberNo);
+//        itemService.addItem(itemAddDTO1, memberNo);
+//
+//        ItemAddDTO itemAddDTO2 = new ItemAddDTO("itemB", 20000, "false", memberNo);
+//        itemService.addItem(itemAddDTO2, memberNo);
+//
+//        ItemAddDTO itemAddDTO3 = new ItemAddDTO("itemC", 30000, "false", memberNo);
+//        itemService.addItem(itemAddDTO3, memberNo);
     }
 
     @Test

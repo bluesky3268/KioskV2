@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberLoginDTO;
 import project.kiosk.kiosk.dto.MemberUpdateDTO;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
 

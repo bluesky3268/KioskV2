@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="/js/jquery-3.6.0.min.js"></script>
 
-    <title>매장 관리</title>
+    <title>매장목록</title>
 </head>
 <body>
 <button type="button" class="btn btn-outline-primary"><a href="javascript:history.back(-1)">뒤로</a></button>
@@ -32,6 +32,7 @@
             <th>위치</th>
             <th>입점일자</th>
             <th>기타</th>
+
         </tr>
     </thead>
     <tbody class="tbody" th:if="${result} == null" th:each="member : ${members}">

@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import project.kiosk.kiosk.dto.ItemAddDTO;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
@@ -22,6 +23,7 @@ import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.MemberService;
 
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -43,14 +45,6 @@ public class AdminPageController {
         return "admin/adminMain";
     }
 
-    @GetMapping("/members")
-    public String memberList(Model model) {
-        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
-        model.addAttribute("members", members);
-        model.addAttribute("result", null);
-        return "admin/memberList";
-    }
-
     @GetMapping("/member")
     public String addForm() {
         return "/admin/joinForm";
@@ -65,6 +59,32 @@ public class AdminPageController {
         return "admin/memberEditForm";
     }
 
+    @GetMapping("/members")
+    public String memberList(Model model) {
+        List members = new ArrayList<>();
+        try {
+            members = memberService.findMemberByRole(Role.MANAGER);
+        } catch (NullPointerException e) {
+            log.info("데이터 없음 : {}", e.getStackTrace());
+        }
+        model.addAttribute("members", members);
+        return "admin/memberList";
+    }
+
+    @GetMapping("/members/{role}")
+    public String getMemberList(@PathVariable String role, Model model) {
+        List members = new ArrayList<>();
+        if (role.equals("supervisor")) {
+            members = memberService.findMemberByRole(Role.SUPERVISOR);
+            model.addAttribute("members", members);
+            return "admin/memberListSupervisor";
+        }else{
+            members = memberService.findMemberByRole(Role.MANAGER);
+            model.addAttribute("members", members);
+            return "admin/memberListManager";
+        }
+    }
+
     //==== item ====
 
     @GetMapping("/item")
@@ -72,25 +92,6 @@ public class AdminPageController {
         List<Member> members = memberService.findMemberByRole(Role.MANAGER);
         model.addAttribute("members", members);
         return "admin/itemAddForm";
-    }
-
-    /**
-     * 상품 등록 : API로 바꿔야 함
-     */
-    @PostMapping("/item")
-    public String itemAdd(@ModelAttribute @Validated ItemAddDTO itemAdd, BindingResult bindingResult, HttpSession session) {
-        Long itemNo = 0L;
-
-        if (!bindingResult.hasErrors()) {
-            String memberId = String.valueOf(session.getAttribute("loggedIn"));
-            Member findMember = memberService.findMemberById(memberId);
-            itemAdd.setMemberNo(findMember.getNo());
-            itemService.addItem(itemAdd, findMember.getNo());
-        }else{
-            log.info("bindingError : {}", bindingResult.getAllErrors());
-        }
-
-        return "redirect:/admin";
     }
 
     @GetMapping("/item/{itemNo}")
@@ -107,16 +108,24 @@ public class AdminPageController {
     public String itemList(@PathVariable("memberNo") Long no, Model model, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable, HttpSession session) {
 
         Page<Item> itemList = itemService.findByMemberNoWithPage(no, pageable);
-        model.addAttribute("items", itemList);
+        Member findMember = memberService.findMemberByMemberNo(no);
 
-        return "admin/itemList";
+        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
+
+        model.addAttribute("memberId", findMember.getId());
+        model.addAttribute("items", itemList);
+        model.addAttribute("members", members);
+
+        return "admin/itemListByMember";
     }
 
     @GetMapping("/items")
     public String itemListAll(Model model, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable, HttpSession session) {
         Page<Item> itemList = itemService.findAll(pageable);
+        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
 
         model.addAttribute("items", itemList);
+        model.addAttribute("members", members);
 
         return "admin/itemList";
     }

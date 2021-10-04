@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.service.FileService;
 import project.kiosk.kiosk.util.FileStore;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
@@ -27,8 +28,13 @@ import project.kiosk.kiosk.service.MemberService;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.sql.Array;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -88,10 +94,9 @@ public class MemberServiceImpl implements MemberService {
 
             Member member = null;
             Role role = null;
-
             if(memberJoin.getRole().equals("supervisor")){
                 role = Role.SUPERVISOR;
-            }else{
+            }else {
                 role = Role.MANAGER;
             }
 
@@ -171,17 +176,27 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<Member> findMemberByRole(Role role) {
 
-        List<Member> result = memberRepository.findByRoleLike(role);
+        log.info("role parameter : {}", role);
+        List<Member> result = memberRepository.findMembersByRoleLike(role);
+
+//        List<MemberListResponseDto> list = new ArrayList<>();
+
+//        for (Member member : result) {
+//            list.add(new MemberListResponseDto(member));
+//        }
+
         if (!result.isEmpty()) {
             return result;
-        }else{
-            throw new NullPointerException();
+        } else {
+            throw new NullPointerException("데이터 베이스에 저장된 값이 하나도 없습니다.");
         }
+
     }
 
     @Override
     public Member findMemberById(String id) {
-        return memberRepository.findMemberById(id);
+        Member findMember = memberRepository.findMemberById(id);
+        return findMember;
     }
 
     @Override
@@ -199,13 +214,18 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member updateMember(Long memberNo, MemberUpdateDTO updateMember, MultipartFile multipartFile) {
+        log.info("updateMember pwd : {}", updateMember.getPassword());
 
         Member member = memberRepository.findMemberByNo(memberNo);
 
-        if (updateMember.getPassword() != null) {
+        String password = "";
+        if (updateMember.getPassword() == null || updateMember.getPassword() == "") {
+            password = member.getPassword();
+        } else {
             String encodedPwd = passwordEncoder.encode(updateMember.getPassword());
-            member.setPassword(encodedPwd);
+            password = encodedPwd;
         }
+        log.info("password : {}", password);
 
         if (!multipartFile.isEmpty()) {
             try {
@@ -218,11 +238,15 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Role role = null;
-        if (updateMember.getRole().equals("supervisor")) {
+        if (updateMember.getRole().equals("none")) {
+            role = member.getRole();
+        }else if (updateMember.getRole().equals("supervisor")) {
             role = Role.SUPERVISOR;
         } else {
             role = Role.MANAGER;
         }
+
+        member.setPassword(password);
         member.setLocation(updateMember.getLocation());
         member.setRole(role);
 

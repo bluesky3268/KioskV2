@@ -16,6 +16,7 @@ import org.springframework.web.util.UriUtils;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.MemberUpdateDTO;
 import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
 import project.kiosk.kiosk.entity.UploadFile;
@@ -38,7 +39,6 @@ public class MemberApiController {
     private final MemberService memberService;
     private final FileStore fileStore;
 
-    @ResponseBody
     @PostMapping("/duplicateCheck")
     public String idDuplicateCheck(@RequestBody HashMap<String, Object> shop) {
         String checkName = String.valueOf(shop.get("shop"));
@@ -86,25 +86,24 @@ public class MemberApiController {
         return memberNo;
     }
 
+
+
     @GetMapping("/member/role/{role}")
     public List<Member> findMembersByRole(@PathVariable("role") String role, Model model) {
 
-        List<Member> result = null;
-        if (role.equals("supervisor")) {
-            result = memberService.findMemberByRole(Role.SUPERVISOR);
-            model.addAttribute("result", result);
-            for (Member member : result) {
-                log.info("supervisor : {}, {}", member.getNo(), member.getId());
+        List<Member> result = new ArrayList<>();
+        try {
+            if (role.equals("supervisor")) {
+                result = memberService.findMemberByRole(Role.SUPERVISOR);
+                model.addAttribute("result", result);
+
+            } else {
+                result = memberService.findMemberByRole(Role.MANAGER);
+                model.addAttribute("result", result);
+
             }
-        } else {
-            result = memberService.findMemberByRole(Role.MANAGER);
-            model.addAttribute("result", result);
-            for (Member member : result) {
-                log.info("manager : {}, {}", member.getNo(), member.getId());
-            }
-        }
-        for (Member member : result) {
-            member.getRole();
+        } catch (NullPointerException e) {
+            log.info("데이터가 없습니다 : {}, {}",e.getMessage(), e.getStackTrace() );
         }
         return result;
 

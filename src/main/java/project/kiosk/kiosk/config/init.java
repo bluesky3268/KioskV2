@@ -3,15 +3,21 @@ package project.kiosk.kiosk.config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import project.kiosk.kiosk.dto.ItemAddDTO;
 import project.kiosk.kiosk.dto.MemberJoinDTO;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
 import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.MemberService;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,7 +32,7 @@ public class init {
     @PostConstruct
     public void init(){
         log.info("PostConstructor init() ");
-        List<Member> supervisorList = null;
+        List<Member> supervisorList = new ArrayList<>();
         try {
             supervisorList = memberService.findMemberByRole(Role.SUPERVISOR);
         } catch (NullPointerException e) {
@@ -37,10 +43,12 @@ public class init {
             Long member2No = memberService.joinInit(member2);
 
             Member sample = memberService.findMemberById("SAMPLE");
-
-            ItemAddDTO itemAddDTO = new ItemAddDTO("item", 10000, "false", sample.getNo());
+            log.info("sample : {}", sample);
+            ItemAddDTO itemAddDTO = new ItemAddDTO(sample.getId(), "item", 10000, "false");
             itemService.addItemInit(itemAddDTO, member2No);
+            }
+
         }
 
-    }
+
 }

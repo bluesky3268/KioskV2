@@ -9,15 +9,17 @@
 <body>
 <header>상품 등록</header>
   <section>
-    <form enctype="multipart/form-data" method="post" action="/admin/items">
+    <form enctype="multipart/form-data" id="form">
         <div class="container">
             <div class="join_input">
               <article for="memberId">매장명</article>
-              <div id="memberId" th:if="${session.role.toString().equals('MANAGER')}" th:text="${session.loggedIn}"></div>
-              <div name ="memberId" th:unless="${session.role.toString().equals('MANAGER')}">
-                  <select th:each="member:${members}">
-                      <option th:text="${member.getId()}" th:value="${member.getId()}"></option>
-                  </select>
+              <div id="role_check" th:value = "${session.role.toString()}">
+                  <div id="manager" th:if="${session.role.toString().equals('MANAGER')}" th:text="${session.loggedIn}"></div>
+                  <div th:unless="${session.role.toString().equals('MANAGER')}">
+                      <select name="member_id">
+                          <option th:each="member:${members}" th:text="${member.getId()}" th:value="${member.getId()}" id="supervisor"></option>
+                      </select>
+                  </div>
               </div>
             </div>
             <div class="join_input">
@@ -40,39 +42,72 @@
               <div><input type="file" id="img" name="img" multiple="multiple"></div>
             </div>
         </div>
-        <button type="submit" class="join_btn" id="btn-saveItem">등록</button>
+        <button type="button" class="join_btn" id="btn-saveItem">등록</button>
         <button type="button" class="go_back"><a href="javascript:history.back(-1)">취소</a></button>
     </form>
   </section>
-<!--<script type="text/javascript">-->
-<!--    $(function(){-->
-<!--        $('#btn-saveItem').click(function(){-->
-<!--            // var data = {-->
-<!--            //     memberId: $('#memberId').val(),-->
-<!--            //     itemName: $('#itemName').val(),-->
-<!--            //     price: $('#price').val(),-->
-<!--            //     isSoldOut:$('#isSoldOut').val()-->
-<!--            // };-->
-<!--            // thumbImg: $('#thumbImg').val()-->
+<script type="text/javascript">
+    $(function() {
+        $('#btn-saveItem').click(function () {
+            var soldOut = $('select[name=isSoldOut]').val();
 
-<!--            $.ajax({-->
-<!--                async:true,-->
-<!--                type:'POST',-->
-<!--                url:'/api/items',-->
-<!--                // data: JSON.stringify(data),-->
-<!--                // dataType:'json',-->
-<!--                // contentType:'application/x-www-form-urlencoded; charset=UTF-8',-->
-<!--                success: function () {-->
-<!--                    alert('상품이 성공적으로 등록되었습니다.');-->
-<!--                    window.location.href='/admin';-->
-<!--                },-->
-<!--                error:function(){-->
-<!--                    alert('상품 등록에 실패했습니다.');-->
-<!--                }-->
-<!--            });-->
+            var checkRole = $('#role_check').val();
+            if (checkRole == 'MANAGER') {
+                var member_id = $('#manager').val();
+            }else{
+                var member_id = $('select[name=member_id]').val();
+            }
 
-<!--        });-->
-<!--    });-->
-<!--</script>-->
+            var data = {
+                memberId: member_id,
+                itemName: $('#itemName').val(),
+                price: $('#price').val(),
+                isSoldOut: soldOut,
+            };
+
+            var memberNo = $('#memberNo').val();
+            var role = $('#role').val();
+            var price = $('#price').val();
+            var img = $('#img').val();
+
+            if (price == null || price == "" || price == undefined) {
+                alert('가격을 입력해주세요.');
+                $('#price').focus();
+                return false;
+            }
+            if (img == null || img == "" || img == undefined) {
+                alert('이미지를 등록해주세요.');
+                $('#img').focus();
+                return false;
+            }
+
+            var form = $('#form')[0];
+            var formData = new FormData(form);
+
+            formData.append('img', $('#img'));
+            formData.append('key', new Blob([JSON.stringify(data)], {type: "application/json"}));
+
+            $.ajax({
+                type: 'POST',
+                url: '/api/item',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function () {
+                    alert("성공적으로 등록되었습니다.");
+                    if (role === 'MANAGER') {
+                        window.location.href = '/admin/items/' + memberNo;
+                    } else if (role === 'SUPERVISOR') {
+                        window.location.href = '/admin/items';
+                    }
+                },
+                error: function (error) {
+                    alert('상품 등록에 실패하였습니다. 다시 시도해주세요.');
+                }
+            });
+
+        });
+    });
+</script>
 </body>
 </html>

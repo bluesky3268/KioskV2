@@ -52,13 +52,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Long addItem(ItemAddDTO itemAddDTO, Long memberNo) {
+    public Long addItem(ItemAddDTO itemAddDTO, MultipartFile multipartFile) {
+        log.info("itemAddDto : {}", itemAddDTO);
+        log.info("multipartFile : {}", multipartFile.getOriginalFilename());
 
-        Member findMember = memberService.findMemberByMemberNo(memberNo);
+        Member findMember = memberService.findMemberById(itemAddDTO.getMemberId());
 
         UploadFile uploadFile = null;
         try {
-            uploadFile = fileStore.saveFile(itemAddDTO.getImg());
+            uploadFile = fileStore.saveFile(multipartFile);
             fileService.addFile(uploadFile);
             log.info("파일등록 성공 : {}", uploadFile.getOriginalName());
         } catch (IOException e) {

@@ -10,19 +10,16 @@
     <h1 class="headerTitle">FOOD COURT</h1>
 </header>
 <nav>
-    <ul>
+    <ul th:each="page : ${paging}">
         <li class="arrow"><a href="#">[ < ]</a></li>
-        <li th:each="member:${memberList}"><a href="#" th:text="${member.getUsername}"></a></li>
-        <li><a href="#">스시앤</a></li>
-        <li><a href="#">아비꼬</a></li>
-        <li><a href="#">청년다방</a></li>
-        <li class="arrow"><a href="#"> [ > ] </a></li>
+        <li th:each="member:${members}"><a href="#" th:text="${member.getUsername}"></a></li>
+        <li class="arrow"><a href="#""> [ > ] </a></li>
     </ul>
 </nav>
 <div class="container_menu">
     <section>
         <ul>
-            <li th:each="manager:${managers}">
+            <li th:each="manager:${members}">
                 <a th:href="@{/{id} (id=${manager.getNo()})}">
                     <div th:text="${manager.id}"></div>
                     <div th:text="${manager.getThumbImg()}"></div>

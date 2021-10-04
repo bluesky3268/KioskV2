@@ -11,6 +11,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.kiosk.kiosk.dto.CartDTO;
 import project.kiosk.kiosk.dto.OrderDTO;
 import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
@@ -32,9 +33,10 @@ public class MainController {
 
     @GetMapping("/")
     public String mainPage(Model model, Pageable pageable, HttpSession session) {
-        List<Member> managers = memberService.findMemberByRole(Role.MANAGER);
+        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
         Page<Member> paging = memberService.memberPaging(pageable);
-        model.addAttribute("managers", managers);
+
+        model.addAttribute("members", members);
         model.addAttribute("paging", paging);
         return "index";
     }

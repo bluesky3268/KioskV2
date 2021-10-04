@@ -16,12 +16,12 @@
 </head>
 <body>
 <header>
-    [ 매장 등록 ]
+    [ 수정 ]
 </header>
 <section class="col-md-12">
     <form id="form" name="join" enctype="multipart/form-data">
         <div class="container">
-            <article>매장 명</article>
+            <article>매장명</article>
             <div class="shopName">
                 <article class="join_input_id"><input type="text" id="id" name="id" th:value="${member.getId()}" readonly style="color: dimgray"></article>
                 <input type="hidden" th:value="${member.getNo()}" id="memberNo"/>
@@ -33,8 +33,9 @@
             <div id="checkPwd"></div>
             <article class="join_input">권한등급
                 <select id="role" name="role">
+                    <option value="none">선택</option>
+                    <option value="manager">manager</option>
                     <option value="supervisor">supervisor</option>
-                    <option value="manager" selected>manager</option>
                 </select>
             </article>
             <br/>

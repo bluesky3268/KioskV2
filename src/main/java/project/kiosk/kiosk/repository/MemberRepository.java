@@ -3,8 +3,10 @@ package project.kiosk.kiosk.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
 
@@ -21,7 +23,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Member findMemberByNo(Long no);
 
-    List<Member> findByRoleLike(Role role);
+    List<Member> findMembersByRoleLike(Role role);
 
     void deleteMemberByNo(Long no);
 

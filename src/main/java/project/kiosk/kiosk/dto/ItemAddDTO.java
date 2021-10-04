@@ -15,21 +15,35 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 public class ItemAddDTO {
 
-    private Long memberNo;
+    private String memberId;
+
     @NotNull
     private String itemName;
+
     @NotNull
     private Integer price;
+
     @NotNull
     private String isSoldOut;
 
     private MultipartFile img;
 
     // 테스트용 생성자
-    public ItemAddDTO(String itemName, Integer price, String isSoldOut, Long memberNo) {
+    public ItemAddDTO(String memberId, String itemName, Integer price, String isSoldOut) {
+        this.memberId = memberId;
         this.itemName = itemName;
         this.price = price;
         this.isSoldOut = isSoldOut;
-        this.memberNo = memberNo;
+    }
+
+    @Override
+    public String toString() {
+        return "ItemAddDTO{" +
+                "memberId='" + memberId + '\'' +
+                ", itemName='" + itemName + '\'' +
+                ", price=" + price +
+                ", isSoldOut='" + isSoldOut + '\'' +
+                ", img=" + img +
+                '}';
     }
 }
