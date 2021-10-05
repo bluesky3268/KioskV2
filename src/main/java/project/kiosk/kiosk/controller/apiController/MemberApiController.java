@@ -1,4 +1,4 @@
-package project.kiosk.kiosk.controller;
+package project.kiosk.kiosk.controller.apiController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,13 +95,12 @@ public class MemberApiController {
         try {
             if (role.equals("supervisor")) {
                 result = memberService.findMemberByRole(Role.SUPERVISOR);
-                model.addAttribute("result", result);
 
             } else {
                 result = memberService.findMemberByRole(Role.MANAGER);
-                model.addAttribute("result", result);
 
             }
+            model.addAttribute("result", result);
         } catch (NullPointerException e) {
             log.info("데이터가 없습니다 : {}, {}",e.getMessage(), e.getStackTrace() );
         }

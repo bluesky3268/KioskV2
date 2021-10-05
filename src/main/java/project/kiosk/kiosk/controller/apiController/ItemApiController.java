@@ -1,4 +1,4 @@
-package project.kiosk.kiosk.controller;
+package project.kiosk.kiosk.controller.apiController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

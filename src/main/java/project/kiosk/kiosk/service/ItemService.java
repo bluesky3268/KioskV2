@@ -25,6 +25,8 @@ public interface ItemService {
 
     List<Item> findItems(Long memberNo);
 
+    Item findItemEntity(Long no);
+
     ItemResponseDto findItem(Long no);
 
     Item findItemByItemName(String itemName);

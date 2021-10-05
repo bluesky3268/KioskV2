@@ -79,9 +79,6 @@ public class ItemServiceImpl implements ItemService {
         return savedItem.getNo();
     }
 
-
-
-
     @Override
     public Long editItem(Long itemNo, ItemUpdateDTO itemUpdate, MultipartFile img) {
 
@@ -119,6 +116,11 @@ public class ItemServiceImpl implements ItemService {
         Item findItem = itemRepository.findByNo(no);
         ItemResponseDto responseItem = new ItemResponseDto(findItem.getNo(), findItem.getItemName(), findItem.getPrice(), findItem.getImg(), findItem.isSoldOut(), findItem.getMember().getId());
         return responseItem;
+    }
+
+    @Override
+    public Item findItemEntity(Long no) {
+        return itemRepository.findByNo(no);
     }
 
     @Override

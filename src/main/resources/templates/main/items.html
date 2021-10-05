@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -7,39 +7,46 @@
 <body>
 <h3>[ 상품 목록 ]</h3>
 <table class="list">
-
-<tr th:each="member:${members}" th:each="page : ${paging}">
+<tr>
     <ul>
         <li class="arrow"><a href="#">[ < ]</a></li>
-        <li><a href="#" th:text="${member.id}">샘플1</a></li>
-        <li><a href="#">샘플2</a></li>
-        <li><a href="#">샘플3</a></li>
+        <li><a href="#" th:each="member:${members}" th:text="${member.id}">매장명</a></li>
         <li class="arrow"><a href="#"> [ > ] </a></li>
     </ul>
-
-    <div th:each="item : ${items}">
-        <form th:action="@{/{no}/{itemNo} (no=${member.no}, itemNo=${item.no})}" method="post">
-        <div class="menu_img"><a href="#" th:text="${item.img}">음식이미지</a></div>
-        <div class="menu_title" th:text="${item.itemName}">음식이름</div>
-        <div class="price" th:text="${item.price}">9,000원</div>
-        <input type="hidden" name="${item.no}">
-        <input type="number" id="q" name="q" min="1" value="1"/>
-        <input type="submit" value="담기"/>
-        </form>
-
-    </div>
 </tr>
+    <div th:each="item : ${items}">
+        <form method="GET" th:action="@{/member/{no}/item/{itemNo}(no = ${item.getMember.getNo()}, itemNo = ${item.getNo()})}">
+            <div class="item-img"><img th:each="file : ${item.getImg()}" th:src="|/api/itemImages/${file.getSaveName()}|" width="330" height="330" id="img"/></div>
+            <div class="item-name" th:text="${item.itemName}">상품명</div>
+            <div class="price" th:text="${item.price}">가격</div>
+            <input type="hidden" name="${item.no}">
+            <input type="number" id="q" name="q" min="1" value="1"/>
+            <input type="submit" id="addItem" value="담기"/>
+        </form>
+    </div>
 </table>
-
-<div th:each="cart : ${session.cart}">
-    <span th:text="${cart.getItem().getItemName()}"></span>
-    <span th:text="${cart.quantity} + 개"></span> X
-    <span th:text="${cart.getItem().getPrice()} + 원"></span>
+<div class="container_info">
+    <article class="ordered_menu">
+        주문내역:
+        <div th:each="cart : ${session.cart}">
+            <input type="hidden" th:value="${session.cart.size()}" id="cartSize">
+            <span th:text="${cart.getItem().getItemName()}" th:value="${cart.getItem().getItemName()}" id="order_itemName"></span>
+            <span th:text="${cart.quantity} + 개" th:value="${cart.quantity}" id="order_item_quantity"></span> X
+            <span th:text="${cart.getItem().getPrice()} + 원"th:value="${cart.getItem().getPrice()}" id="order_item_price"></span>
+        </div>
+    </article>
+    <article class="total_price">
+        결제금액:
+        <div th:if="${session.totalPrice} == null" th:text="0원"/>
+        <div th:unless="${session.totalPrice} == null" th:text="${session.totalPrice} + 원"/>
+    </article>
 </div>
+
 
 <div>
     <input type="button" th:value="다음으로" th:onclick="|location.href='@{/order}'|" />
 </div>
+</table>
 
 </body>
 </html>

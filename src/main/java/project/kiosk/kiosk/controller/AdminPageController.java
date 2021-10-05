@@ -8,14 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import project.kiosk.kiosk.dto.ItemAddDTO;
-import project.kiosk.kiosk.dto.MemberJoinDTO;
 import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
-import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
 import project.kiosk.kiosk.entity.Role;
@@ -56,7 +50,7 @@ public class AdminPageController {
         Member findMember = memberService.findMemberByMemberNo(memberNo);
         model.addAttribute("member", findMember);
         model.addAttribute("file", findMember.getThumbImg());
-        return "admin/memberEditForm";
+        return "admin/member/memberEditForm";
     }
 
     @GetMapping("/members")
@@ -68,7 +62,7 @@ public class AdminPageController {
             log.info("데이터 없음 : {}", e.getStackTrace());
         }
         model.addAttribute("members", members);
-        return "admin/memberList";
+        return "admin/member/memberList";
     }
 
     @GetMapping("/members/{role}")
@@ -77,11 +71,11 @@ public class AdminPageController {
         if (role.equals("supervisor")) {
             members = memberService.findMemberByRole(Role.SUPERVISOR);
             model.addAttribute("members", members);
-            return "admin/memberListSupervisor";
+            return "admin/member/memberListSupervisor";
         }else{
             members = memberService.findMemberByRole(Role.MANAGER);
             model.addAttribute("members", members);
-            return "admin/memberListManager";
+            return "admin/member/memberListManager";
         }
     }
 
@@ -91,7 +85,7 @@ public class AdminPageController {
     public String itemAddForm(Model model) {
         List<Member> members = memberService.findMemberByRole(Role.MANAGER);
         model.addAttribute("members", members);
-        return "admin/itemAddForm";
+        return "admin/item/itemAddForm";
     }
 
     @GetMapping("/item/{itemNo}")
@@ -101,7 +95,7 @@ public class AdminPageController {
         model.addAttribute("item", item);
         model.addAttribute("file", item.getThumbImg());
         model.addAttribute("memberNo", member.getNo());
-        return "admin/itemEditForm";
+        return "admin/item/itemEditForm";
     }
 
     @GetMapping("/items/{memberNo}")
@@ -116,7 +110,7 @@ public class AdminPageController {
         model.addAttribute("items", itemList);
         model.addAttribute("members", members);
 
-        return "admin/itemListByMember";
+        return "admin/item/itemListByMember";
     }
 
     @GetMapping("/items")
@@ -127,7 +121,7 @@ public class AdminPageController {
         model.addAttribute("items", itemList);
         model.addAttribute("members", members);
 
-        return "admin/itemList";
+        return "admin/item/itemList";
     }
 
 

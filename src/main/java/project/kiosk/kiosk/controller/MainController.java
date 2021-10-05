@@ -14,7 +14,9 @@ import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
 import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
+import project.kiosk.kiosk.entity.Order;
 import project.kiosk.kiosk.entity.Role;
+import project.kiosk.kiosk.repository.OrderRepository;
 import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.MemberService;
 
@@ -30,6 +32,7 @@ public class MainController {
 
     private final ItemService itemService;
     private final MemberService memberService;
+    private final OrderRepository orderRepository;
 
     @GetMapping("/")
     public String mainPage(Model model, Pageable pageable, HttpSession session) {
@@ -72,12 +75,21 @@ public class MainController {
             itemList = (List<CartDTO>) session.getAttribute("cart");
         }
         itemList.add(cart);
+
+        int totalPrice = 0;
+        for (int i = 0; i < itemList.size(); i++) {
+            int price = itemList.get(i).getItem().getPrice();
+            int q = itemList.get(i).getQuantity();
+            totalPrice += price * q;
+        }
+
+        session.setAttribute("totalPrice", totalPrice);
         session.setAttribute("cart", itemList);
 
         log.info("cart : {}, {}원, {}개", cart.getItem().getItemName(), cart.getItem().getPrice(), cart.getQuantity());
 
         redirectAttributes.addAttribute("no", no);
-        return "redirect:/{no}";
+        return "redirect:/member/{no}";
 
     }
 
@@ -87,7 +99,7 @@ public class MainController {
 
         int totalPrice = 0;
         for (int i = 0; i < cart.size(); i++) {
-            Integer price = cart.get(i).getItem().getPrice();
+            int price = cart.get(i).getItem().getPrice();
             int quantity = cart.get(i).getQuantity();
             totalPrice += price * quantity;
         }
@@ -98,6 +110,22 @@ public class MainController {
 
     @GetMapping("/payment")
     public String pay(HttpSession session) {
+
+        List<CartDTO> cart = (ArrayList<CartDTO>) session.getAttribute("cart");
+        for (CartDTO cartDTO : cart) {
+            log.info("item in cart : {}, {}, {}, {}",cartDTO.getItem().getMemberId(), cartDTO.getItem().getItemName(), cartDTO.getQuantity(), cartDTO.getItem().getPrice());
+        }
+
+        for (CartDTO cartDTO : cart) {
+            Member member = memberService.findMemberById(cartDTO.getItem().getMemberId());
+            int price = cartDTO.getItem().getPrice();
+            Item item = itemService.findItemEntity(cartDTO.getItem().getNo());
+
+            Order order = new Order(item, price, cartDTO.getQuantity(), member);
+
+            orderRepository.save(order);
+        }
+
         return "main/success";
     }
 

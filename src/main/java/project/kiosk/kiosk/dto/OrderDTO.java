@@ -13,7 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class OrderDTO {
 
-    private List<CartDTO> cart;
+    private String itemName;
+    private int price;
+    private int quantity;
 
     private int totalPrice;
 
