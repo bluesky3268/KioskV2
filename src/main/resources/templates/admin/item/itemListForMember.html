@@ -15,13 +15,7 @@
 </div>
 
 <h2>상품 목록</h2>
-<div>
-    <select id="select_store">
-        <option>-</option>
-        <option th:each="member : ${members}" th:value="${member.getNo()}" th:text="${member.getId()}">매장명</option>
-    </select>
-    <button type="button" id="btn_search_store" class="btn btn-primary">검색</button>
-</div>
+<h3 th:text="${member.getId()}"></h3>
 <div class="col-md-12">
     <div class="col-md-8">
         <table class="table table-horizontal table-bordered">

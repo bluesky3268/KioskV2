@@ -41,7 +41,7 @@ public class AdminPageController {
 
     @GetMapping("/member")
     public String addForm() {
-        return "/admin/joinForm";
+        return "admin/member/joinForm";
     }
 
 
@@ -101,16 +101,24 @@ public class AdminPageController {
     @GetMapping("/items/{memberNo}")
     public String itemList(@PathVariable("memberNo") Long no, Model model, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable, HttpSession session) {
 
+        String role = String.valueOf(session.getAttribute("role"));
         Page<Item> itemList = itemService.findByMemberNoWithPage(no, pageable);
         Member findMember = memberService.findMemberByMemberNo(no);
 
-        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
+        if (role.equals("SUPERVISOR")) {
+            List<Member> members = memberService.findMemberByRole(Role.MANAGER);
 
-        model.addAttribute("memberId", findMember.getId());
-        model.addAttribute("items", itemList);
-        model.addAttribute("members", members);
+            model.addAttribute("memberId", findMember.getId());
+            model.addAttribute("items", itemList);
+            model.addAttribute("members", members);
 
-        return "admin/item/itemListByMember";
+            return "admin/item/itemListByMember";
+
+        }else{
+            model.addAttribute("items", itemList);
+            model.addAttribute("member", findMember);
+            return "/admin/item/itemListForMember";
+        }
     }
 
     @GetMapping("/items")

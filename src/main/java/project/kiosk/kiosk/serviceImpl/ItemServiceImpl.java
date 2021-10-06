@@ -85,7 +85,7 @@ public class ItemServiceImpl implements ItemService {
         Item item = itemRepository.findByNo(itemNo);
         UploadFile updateImg = null;
 
-        if (img != null) {
+        if (!img.isEmpty()) {
             try {
                 updateImg = fileStore.saveFile(img);
                 fileService.addFile(updateImg);
@@ -97,6 +97,7 @@ public class ItemServiceImpl implements ItemService {
         }
 
         item.setPrice(itemUpdate.getPrice());
+
         if (itemUpdate.getIsSoldOut().equals("true")) {
             item.setSoldOut(true);
         }else{

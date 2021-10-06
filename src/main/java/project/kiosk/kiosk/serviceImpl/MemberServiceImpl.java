@@ -246,8 +246,13 @@ public class MemberServiceImpl implements MemberService {
             role = Role.MANAGER;
         }
 
+        String location = null;
+        if (updateMember.getLocation().equals("") || updateMember.getLocation() == null) {
+            location = member.getLocation();
+        }
+
         member.setPassword(password);
-        member.setLocation(updateMember.getLocation());
+        member.setLocation(location);
         member.setRole(role);
 
         return member;

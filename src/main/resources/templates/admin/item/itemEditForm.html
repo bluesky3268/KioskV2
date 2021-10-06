@@ -6,7 +6,7 @@
     <script src="/js/jquery-3.6.0.min.js"></script>
     <title>상품 수정 화면</title>
 </head>
-<body>
+<body onload="noBack();" onpageshow="if(event.persisted) noBack();" onunload="">
 <header>상품 수정</header>
 <section>
     <form enctype="multipart/form-data" id="form">
@@ -92,6 +92,9 @@
 
         });
     });
+
+    window.history.forward();
+    function noBack(){window.history.forward();}
 </script>
 </body>
 </html>
