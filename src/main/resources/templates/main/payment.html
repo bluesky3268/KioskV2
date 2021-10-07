@@ -13,7 +13,7 @@
      <span th:text="${cart.getItem().getPrice()} + 원" th:value="${cart.getItem().getPrice()}" id = price></span>
  </div>
  <div th:text="${session.totalPrice} + 원" th:value="${session.totalPrice}" id="totalPrice"/>
- <button type="button" id="btn_payment" th:value="결제하기" th:onclick="|location.href='@{/payment}'|" />
+ <button type="button" id="btn_payment" th:value="결제하기" th:onclick="|location.href='@{/payment}'|">결제하기</button>
 </body>
 
 <script type="text/javascript">
