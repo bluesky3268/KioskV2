@@ -19,6 +19,7 @@ import project.kiosk.kiosk.entity.Role;
 import project.kiosk.kiosk.repository.OrderRepository;
 import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.MemberService;
+import project.kiosk.kiosk.service.OrderService;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class MainController {
 
     private final ItemService itemService;
     private final MemberService memberService;
-    private final OrderRepository orderRepository;
+    private final OrderService orderService;
 
     @GetMapping("/")
     public String mainPage(Model model, Pageable pageable, HttpSession session) {
@@ -116,15 +117,7 @@ public class MainController {
             log.info("item in cart : {}, {}, {}, {}",cartDTO.getItem().getMemberId(), cartDTO.getItem().getItemName(), cartDTO.getQuantity(), cartDTO.getItem().getPrice());
         }
 
-        for (CartDTO cartDTO : cart) {
-            Member member = memberService.findMemberById(cartDTO.getItem().getMemberId());
-            int price = cartDTO.getItem().getPrice();
-            Item item = itemService.findItemEntity(cartDTO.getItem().getNo());
-
-            Order order = new Order(item, price, cartDTO.getQuantity(), member);
-
-            orderRepository.save(order);
-        }
+        orderService.addOrder(cart);
 
         return "main/success";
     }

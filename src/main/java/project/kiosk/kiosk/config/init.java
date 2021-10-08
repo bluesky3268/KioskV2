@@ -37,15 +37,15 @@ public class init {
             supervisorList = memberService.findMemberByRole(Role.SUPERVISOR);
         } catch (NullPointerException e) {
             MemberJoinDTO member = new MemberJoinDTO("ROOT", "1234", "1234", "supervisor");
-            MemberJoinDTO member2 = new MemberJoinDTO("SAMPLE", "1234", "1234", "manager");
+//            MemberJoinDTO member2 = new MemberJoinDTO("SAMPLE", "1234", "1234", "manager");
             log.info("joinInit()호출");
             Long memberNo = memberService.joinInit(member);
-            Long member2No = memberService.joinInit(member2);
-
-            Member sample = memberService.findMemberById("SAMPLE");
-            log.info("sample : {}", sample);
-            ItemAddDTO itemAddDTO = new ItemAddDTO(sample.getId(), "item", 10000, "false");
-            itemService.addItemInit(itemAddDTO, member2No);
+//            Long member2No = memberService.joinInit(member2);
+//
+//            Member sample = memberService.findMemberById("SAMPLE");
+//            log.info("sample : {}", sample);
+//            ItemAddDTO itemAddDTO = new ItemAddDTO(sample.getId(), "item", 10000, "false");
+//            itemService.addItemInit(itemAddDTO, member2No);
             }
 
         }

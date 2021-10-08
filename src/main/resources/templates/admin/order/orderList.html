@@ -21,7 +21,6 @@
         <option th:each="member : ${members}" th:value="${member.getNo()}" th:text="${member.getId()}">매장명</option>
     </select>
     <button type="button" id="btn_search_member" class="btn btn-primary">검색</button>
-    <a type="button" th:href="@{/admin/orders}" class="btn btn-primary">전체보기</a>
 </div>
 <table class="table table-horizontal table-bordered">
     <thead>
@@ -36,19 +35,19 @@
     </tr>
     </thead>
     <tbody class="tbody" th:each="order : ${orders}">
-    <td th:text = "${order.getMember().getId()}" id="memberName">매장명</td>
-    <td th:text="${order.getNo()}" id="orderNo">주문번호</td>
-    <td th:text = "${order.getItem().getItemName()}" id="itemName">상품명</td>
-    <td th:text="${order.getPrice()}" id="price">가격</td>
-    <td th:text="${order.getQuantity()}" id="quantity">수량</td>
-    <td th:text="${order.getTotalPrice()}" id="totalPrice">주문 총 가격</td>
-    <td th:text="${order.getRegDate()}" id="regDate">주문 일시</td>
-
-
+        <td th:text = "${order.getMember().getId()}" id="memberName">매장명</td>
+        <td th:text="${order.getNo()}" id="orderNo">주문번호</td>
+        <td th:text = "${order.getItem().getItemName()}" id="itemName">상품명</td>
+        <td th:text="${order.getPrice()}" id="price">가격</td>
+        <td th:text="${order.getQuantity()}" id="quantity">수량</td>
+        <td th:text="${order.getTotalPrice()}" id="totalPrice">주문 총 가격</td>
+        <td th:text="${order.getRegDate()}" id="regDate">주문 일시</td>
     </tbody>
 </table>
 
 <script type="text/javascript">
+
+
 
     $(function (){
         $('#btn_search_member').click(function (){

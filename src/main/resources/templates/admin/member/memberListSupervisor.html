@@ -21,7 +21,7 @@
         <option value="supervisor" selected>관리자</option>
         <option value="manager">매장</option>
     </select>
-    <button type="button" id="btn_search_role">검색</button>
+    <button type="submit" id="btn_search_role">검색</button>
 </div>
 <table class="table table-horizontal table-bordered">
     <thead>
@@ -34,7 +34,7 @@
 
         </tr>
     </thead>
-    <tbody class="tbody" th:if="${result} == null" th:each="member : ${members}">
+    <tbody class="tbody" th:each="member : ${members}">
         <td th:text="${member.getNo()}" id="member_No">관리자 번호</td>
         <input type="hidden" id="memberNo" th:value="${member.no}"/>
         <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50" id="img"/></td>
@@ -49,7 +49,7 @@
 </table>
 <script type="text/javascript">
     $(function(){
-        $('#btn_member_delete').click(function(){
+        $(document).on("click", "#btn_member_delete", function(){
 
             var memberNo = $('#memberNo').val();
 
@@ -80,6 +80,7 @@
                dataType:'json',
                contentType:'application/json; charset=UTF-8',
                success:  function () {
+
                    window.location.href = '/admin/members/' + role;
                }
            });

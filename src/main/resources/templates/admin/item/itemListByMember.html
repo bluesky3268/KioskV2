@@ -54,11 +54,24 @@
             </td>
             </tbody>
         </table>
+        <nav aria-label="pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${items.getPageable().getPageNumber() + 1 == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/items/{memberNo}(memberNo=${member.getNo()}, page=${items.getPageable().getPageNumber() -1})}" tabindex="-1" aria-disabled="true">이전</a>
+                </li>
+                <li class="page-item" th:classappend="${i == items.getPageable().getPageNumber() + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                    <a class="page-link" th:href="@{/admin/items/{memberNo}(memberNo=${member.getNo}, page=${i - 1})}" th:text="${i}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${items.getPageable().getPageNumber() + 1 == items.getTotalPages()} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/items/{memberNo}(memberNo=${member.getNo}, page=${items.getPageable().getPageNumber() +1})}" >다음</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <script type="text/javascript">
     $(function(){
-        $('#btn_item_delete').click(function(){
+        $(document).on("click", "#btn_item_delete", function(){
 
             var itemNo = $('#itemNo').val();
             var memberNo = $('#memberNo').val();

@@ -35,7 +35,7 @@
 
         </tr>
     </thead>
-    <tbody class="tbody" th:if="${result} == null" th:each="member : ${members}">
+    <tbody class="tbody" th:each="member : ${members}">
         <td th:text="${member.getNo()}" id="member_No">매장번호</td>
         <input type="hidden" id="memberNo" th:value="${member.no}"/>
         <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50" id="img"/></td>
@@ -51,7 +51,7 @@
 </table>
 <script type="text/javascript">
     $(function(){
-        $('#btn_member_delete').click(function(){
+        $(document).on("click", "#btn_member_delete", function(){
 
             var memberNo = $('#memberNo').val();
 

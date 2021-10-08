@@ -16,41 +16,41 @@
  <button type="button" id="btn_payment" th:value="결제하기" th:onclick="|location.href='@{/payment}'|">결제하기</button>
 </body>
 
-<script type="text/javascript">
-    $(function(){
-        $('#btn_payment').click(function(){
+<!--<script type="text/javascript">-->
+<!--    $(function(){-->
+<!--        $('#btn_payment').click(function(){-->
 
-            var itemName = $('#itemName').val();
-            var quantity = $('#quantity').val();
-            var price = $('#price').val();
-            var totalPrice = $('#totalPrice').val();
+<!--            var itemName = $('#itemName').val();-->
+<!--            var quantity = $('#quantity').val();-->
+<!--            var price = $('#price').val();-->
+<!--            var totalPrice = $('#totalPrice').val();-->
 
 
-            var order =$('#order');
-            console.log(order);
-            var orderData = new FormData(order);
+<!--            var order =$('#order');-->
+<!--            console.log(order);-->
+<!--            var orderData = new FormData(order);-->
 
-            orderData.append("itemName", $('#itemName'));
-            orderData.append("quantity", $('#quantity'));
-            orderData.append("price", $('#price'));
-            orderData.append("totalPrice", $('#totalPrice'));
+<!--            orderData.append("itemName", $('#itemName'));-->
+<!--            orderData.append("quantity", $('#quantity'));-->
+<!--            orderData.append("price", $('#price'));-->
+<!--            orderData.append("totalPrice", $('#totalPrice'));-->
 
-            $.ajax({
-                type:'GET',
-                url: '/api/payment',
-                dataType:'json',
-                data: orderData,
-                contentType:'application/json; charset=UTF-8',
-                success: function () {
-                    alert('주문 완료.');
-                    window.location.href = '/payment';
-                },
-                error:function(){
-                    alert('주문에 실패했습니다. 다시 시도해 주세요.');
-                }
-            });
+<!--            $.ajax({-->
+<!--                type:'GET',-->
+<!--                url: '/api/payment',-->
+<!--                dataType:'json',-->
+<!--                data: orderData,-->
+<!--                contentType:'application/json; charset=UTF-8',-->
+<!--                success: function () {-->
+<!--                    alert('주문 완료.');-->
+<!--                    window.location.href = '/payment';-->
+<!--                },-->
+<!--                error:function(){-->
+<!--                    alert('주문에 실패했습니다. 다시 시도해 주세요.');-->
+<!--                }-->
+<!--            });-->
 
-        });
-    });
+<!--        });-->
+<!--    });-->
 </script>
 </html>

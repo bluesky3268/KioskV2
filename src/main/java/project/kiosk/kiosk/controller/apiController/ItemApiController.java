@@ -44,8 +44,10 @@ public class ItemApiController {
     private final FileStore fileStore;
 
     @PostMapping("/item")
-    public Long itemAdd(@RequestPart(value="key") @Validated ItemAddDTO itemAdd, BindingResult bindingResult,
-                          @RequestPart(value = "img") MultipartFile img) {
+    public String itemAdd(@RequestPart(value="key") @Validated ItemAddDTO itemAdd, BindingResult bindingResult,
+                          @RequestPart(value = "img") MultipartFile img, HttpSession session) {
+
+        log.info("itemAddDTO : {}, {}, {}", itemAdd.getMemberId(), itemAdd.getItemName(), itemAdd.getPrice());
 
         Long itemNo = 0L;
         if (!bindingResult.hasErrors()) {
@@ -53,17 +55,18 @@ public class ItemApiController {
         }else{
             log.info("bindingError : {}", bindingResult.getAllErrors());
         }
+        String role = String.valueOf(session.getAttribute("role"));
 
-        return itemNo;
+        return role;
     }
-
-    @GetMapping("/item/{itemNo}")
-    public ItemResponseDto itemDetail(@PathVariable Long itemNo, Model model) {
-
-        ItemResponseDto responseItem = itemService.findItem(itemNo);
-
-        return responseItem;
-    }
+//
+//    @GetMapping("/item/{itemNo}")
+//    public ItemResponseDto itemDetail(@PathVariable Long itemNo, Model model) {
+//
+//        ItemResponseDto responseItem = itemService.findItem(itemNo);
+//
+//        return responseItem;
+//    }
 
     @PatchMapping("/item/{itemNo}")
     public Long editItem(@PathVariable Long itemNo, @RequestPart(value="key") @Validated ItemUpdateDTO itemUpdate, BindingResult bindingResult,

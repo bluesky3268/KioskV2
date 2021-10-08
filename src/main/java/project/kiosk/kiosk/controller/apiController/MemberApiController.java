@@ -90,17 +90,18 @@ public class MemberApiController {
 
     @GetMapping("/member/role/{role}")
     public List<Member> findMembersByRole(@PathVariable("role") String role, Model model) {
-
         List<Member> result = new ArrayList<>();
         try {
             if (role.equals("supervisor")) {
                 result = memberService.findMemberByRole(Role.SUPERVISOR);
-
             } else {
                 result = memberService.findMemberByRole(Role.MANAGER);
 
             }
             model.addAttribute("result", result);
+            for (Member member : result) {
+                log.info("member : {}", member);
+            }
         } catch (NullPointerException e) {
             log.info("데이터가 없습니다 : {}, {}",e.getMessage(), e.getStackTrace() );
         }

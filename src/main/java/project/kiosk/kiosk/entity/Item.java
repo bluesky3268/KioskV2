@@ -26,7 +26,7 @@ public class Item {
 
     private boolean isSoldOut;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "member_no")
     private Member member;
 

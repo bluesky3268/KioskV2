@@ -15,14 +15,7 @@
 <br/>
 
 <h2>주문 목록</h2>
-<div>
-    <select id="select_store">
-        <option>-</option>
-        <option th:each="member : ${members}" th:value="${member.getNo()}" th:text="${member.getId()}">매장명</option>
-    </select>
-    <button type="button" id="btn_search_member" class="btn btn-primary">검색</button>
-    <a type="button" th:href="@{/admin/orders}" class="btn btn-primary">전체보기</a>
-</div>
+<div th:text="${member.getId()}"/>
 <table class="table table-horizontal table-bordered">
     <thead>
     <tr>
@@ -42,30 +35,12 @@
     <td th:text="${order.getPrice()}" id="price">가격</td>
     <td th:text="${order.getQuantity()}" id="quantity">수량</td>
     <td th:text="${order.getTotalPrice()}" id="totalPrice">주문 총 가격</td>
-    <td th:text="${order.getRegDate()}" id="regDate">주문 일시</td>
-
-
+    <td th:text="${order.getRegDate()}" id="regDate">주문 총 가격</td>
     </tbody>
 </table>
 
 <script type="text/javascript">
 
-    $(function (){
-        $('#btn_search_member').click(function (){
-
-            var memberNo = $('select[id=select_store]').val();
-
-            $.ajax({
-                type:'GET',
-                url: '/api/orders/member/' + memberNo,
-                dataType:'json',
-                contentType:'application/json; charset=UTF-8',
-                success:  function () {
-                    window.location.href = '/admin/orders/member/' + memberNo;
-                }
-            });
-        });
-    });
 
 </script>
 </body>

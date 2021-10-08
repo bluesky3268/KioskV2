@@ -3,6 +3,7 @@ package project.kiosk.kiosk.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
+import project.kiosk.kiosk.entity.Order;
 import project.kiosk.kiosk.entity.Role;
 import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.MemberService;
+import project.kiosk.kiosk.service.OrderService;
 
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ public class AdminPageController {
 
     private final ItemService itemService;
     private final MemberService memberService;
+    private final OrderService orderService;
 
     //==== Member ====
 
@@ -82,9 +86,24 @@ public class AdminPageController {
     //==== item ====
 
     @GetMapping("/item")
-    public String itemAddForm(Model model) {
-        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
-        model.addAttribute("members", members);
+    public String itemAddForm(Model model, HttpSession session) {
+
+        String role = String.valueOf(session.getAttribute("role"));
+
+        if (role.equals("MANAGER")) {
+            String memberId = String.valueOf(session.getAttribute("loggedIn"));
+            Member findMember = memberService.findMemberById(memberId);
+            model.addAttribute("member", findMember);
+        }else{
+            List<Member> members = memberService.findMemberByRole(Role.MANAGER);
+            model.addAttribute("members", members);
+
+            String memberId = String.valueOf(session.getAttribute("loggedIn"));
+            Member findMember = memberService.findMemberById(memberId);
+            model.addAttribute("member", findMember);
+
+        }
+
         return "admin/item/itemAddForm";
     }
 
@@ -92,6 +111,7 @@ public class AdminPageController {
     public String itemEdit(@PathVariable Long itemNo, Model model) {
         ItemResponseDto item = itemService.findItem(itemNo);
         Member member = memberService.findMemberById(item.getMemberId());
+
         model.addAttribute("item", item);
         model.addAttribute("file", item.getThumbImg());
         model.addAttribute("memberNo", member.getNo());
@@ -105,18 +125,27 @@ public class AdminPageController {
         Page<Item> itemList = itemService.findByMemberNoWithPage(no, pageable);
         Member findMember = memberService.findMemberByMemberNo(no);
 
+        int startPage = Math.max(1, itemList.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(itemList.getTotalPages(), itemList.getPageable().getPageNumber() + 4);
+
         if (role.equals("SUPERVISOR")) {
             List<Member> members = memberService.findMemberByRole(Role.MANAGER);
 
-            model.addAttribute("memberId", findMember.getId());
-            model.addAttribute("items", itemList);
+            model.addAttribute("member", findMember);
             model.addAttribute("members", members);
+            model.addAttribute("items", itemList);
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
 
             return "admin/item/itemListByMember";
 
         }else{
-            model.addAttribute("items", itemList);
+
             model.addAttribute("member", findMember);
+            model.addAttribute("items", itemList);
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
+
             return "/admin/item/itemListForMember";
         }
     }
@@ -126,11 +155,54 @@ public class AdminPageController {
         Page<Item> itemList = itemService.findAll(pageable);
         List<Member> members = memberService.findMemberByRole(Role.MANAGER);
 
+        int startPage = Math.max(1, itemList.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(itemList.getTotalPages(), itemList.getPageable().getPageNumber() + 4);
+
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         model.addAttribute("items", itemList);
         model.addAttribute("members", members);
 
         return "admin/item/itemList";
     }
 
+    //order
+
+    @GetMapping("/orders")
+    public String orderListAll(Pageable pageable, Model model, HttpSession session) {
+        String role = String.valueOf(session.getAttribute("role"));
+        if (role.equals("SUPERVISOR")) {
+            List<Member> members = memberService.findMemberByRole(Role.MANAGER);
+            Page<Order> orders = orderService.findAll(pageable);
+
+            model.addAttribute("orders", orders);
+            model.addAttribute("members", members);
+
+            return "admin/order/orderList";
+        }else{
+            String id = String.valueOf(session.getAttribute("loggedIn"));
+            Member member = memberService.findMemberById(id);
+
+            Page<Order> orders = orderService.findOrdersByMemberNoWithPaging(member.getNo(), pageable);
+
+            model.addAttribute("member", member);
+            model.addAttribute("orders", orders);
+
+            return "admin/order/orderListForMember";
+        }
+
+    }
+
+    @GetMapping("/orders/member/{memberNo}")
+    public String orderListByMember(@PathVariable Long memberNo, Pageable pageable, Model model) {
+
+        Page<Order> orders = orderService.findOrdersByMemberNoWithPaging(memberNo, pageable);
+        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
+
+        model.addAttribute("members", members);
+        model.addAttribute("orders", orders);
+
+        return "admin/order/orderListByMember";
+    }
 
 }

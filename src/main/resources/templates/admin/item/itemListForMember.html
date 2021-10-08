@@ -12,6 +12,7 @@
     <button type="button" class="btn btn-outline-primary"><a href="javascript:history.back(-1)">뒤로</a></button>
     <button type="button" class="btn btn-outline-primary"><a th:href="@{/admin}">메인</a></button>
     <a th:href="@{/admin/item}" class="btn btn-primary">상품 등록</a>
+    <a th:href="@{/admin/orders}" class="btn btn-primary">주문관리</a>
 </div>
 
 <h2>상품 목록</h2>
@@ -38,7 +39,7 @@
             <td th:text="${item.no}" id="no">상품번호</td>
             <td><img th:each="file : ${item.getImg()}" th:src="|/api/itemImages/${file.getSaveName()}|" width="100" height="50"/></td>
             <td th:text="${item.getItemName()}" >상품명</td>
-            <td th:text="${item.getPrice()}">가격</td>
+            <td th:text="${item.getPrice()} + 원">가격</td>
             <td th:if="${item.isSoldOut.toString().equals('false')}">판매중</td>
             <td th:unless="${item.isSoldOut.toString().equals('false')}">품절</td>
             <td>
@@ -47,11 +48,24 @@
             </td>
             </tbody>
         </table>
+        <nav aria-label="pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${items.getPageable().getPageNumber() + 1 == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/items/{memberNo}(memberNo=${member.getNo()}, page=${items.getPageable().getPageNumber() -1})}" tabindex="-1" aria-disabled="true">이전</a>
+                </li>
+                <li class="page-item" th:classappend="${i == items.getPageable().getPageNumber() + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                    <a class="page-link" th:href="@{/admin/items/{memberNo}(memberNo=${member.getNo}, page=${i - 1})}" th:text="${i}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${items.getPageable().getPageNumber() + 1 == items.getTotalPages()} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/items/{memberNo}(memberNo=${member.getNo}, page=${items.getPageable().getPageNumber() +1})}" >다음</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <script type="text/javascript">
     $(function(){
-        $('#btn_item_delete').click(function(){
+        $(document).on("click", "#btn_item_delete", function(){
 
             var itemNo = $('#itemNo').val();
             var memberNo = $('#memberNo').val();

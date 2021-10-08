@@ -24,9 +24,9 @@
 </div>
 <div class="col-md-12">
     <div class="col-md-8">
-        <table class="table table-horizontal table-bordered">
+        <table class="table table-horizontal table-bordered" style="text-align: center">
             <thead>
-            <tr>
+            <tr class="table-light">
                 <th>매장명</th>
                 <th>상품번호</th>
                 <th>사진</th>
@@ -37,27 +37,41 @@
             </tr>
             </thead>
             <tbody th:each="item : ${items}">
-            <input type="hidden" th:value="${item.getMember().getNo()}" id="memberNo"/>
-            <input type="hidden" th:value="${item.getNo()}" id="itemNo"/>
-            <input type="hidden" th:value="${session.role}" id="role"/>
-            <td th:text="${item.getMember().getId()}" id="member">상품번호</td>
-            <td th:text="${item.no}" id="no">상품번호</td>
-            <td><img th:each="file : ${item.getImg()}" th:src="|/api/itemImages/${file.getSaveName()}|" width="100" height="50"/></td>
-            <td th:text="${item.getItemName()}" >상품명</td>
-            <td th:text="${item.getPrice()}">가격</td>
-            <td th:if="${item.isSoldOut.toString().equals('false')}">판매중</td>
-            <td th:unless="${item.isSoldOut.toString().equals('false')}">품절</td>
+                <input type="hidden" th:value="${item.getMember().getNo()}" id="memberNo"/>
+                <input type="hidden" th:value="${item.getNo()}" id="itemNo"/>
+                <input type="hidden" th:value="${session.role}" id="role"/>
+
+                <td th:text="${item.getMember().getId()}" id="member">매장명</td>
+                <td th:text="${item.no}" id="no">상품번호</td>
+                <td><img th:each="file : ${item.getImg()}" th:src="|/api/itemImages/${file.getSaveName()}|" width="100" height="50"/></td>
+                <td th:text="${item.getItemName()}" >상품명</td>
+                <td th:text="${item.getPrice()}">가격</td>
+                <td th:if="${item.isSoldOut.toString().equals('false')}">판매중</td>
+                <td th:unless="${item.isSoldOut.toString().equals('false')}">품절</td>
             <td>
                 <a th:href="@{/admin/item/{itemNo}(itemNo=${item.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>
                 <button type="button" class="btn btn-danger" id="btn_item_delete">삭제</button>
             </td>
             </tbody>
         </table>
+        <nav aria-label="pagination">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${items.getPageable().getPageNumber() + 1 == 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/items(page=${items.getPageable().getPageNumber() -1})}" tabindex="-1" aria-disabled="true">이전</a>
+                </li>
+                <li class="page-item" th:classappend="${i == items.getPageable().getPageNumber() + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                    <a class="page-link" th:href="@{/admin/items(page=${i - 1})}" th:text="${i}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${items.getPageable().getPageNumber() + 1 == items.getTotalPages()} ? 'disabled'">
+                    <a class="page-link" th:href="@{/admin/items(page=${items.getPageable().getPageNumber() +1})}" >다음</a>
+                </li>
+            </ul>
+        </nav>
     </div>
 </div>
 <script type="text/javascript">
     $(function(){
-        $('#btn_item_delete').click(function(){
+        $(document).on("click", "#btn_item_delete", function(){
 
             var itemNo = $('#itemNo').val();
             var memberNo = $('#memberNo').val();
@@ -70,9 +84,9 @@
                 contentType:'application/json; charset=UTF-8',
                 success: function () {
                     alert('성공적으로 삭제되었습니다.');
-                    if(role === 'MANAGER'){
+                    if(role == 'MANAGER'){
                         window.location.href = '/admin/items/' + memberNo;
-                    }else if (role === 'SUPERVISOR') {
+                    }else if (role == 'SUPERVISOR') {
                         window.location.href = '/admin/items';
                     }
                 },

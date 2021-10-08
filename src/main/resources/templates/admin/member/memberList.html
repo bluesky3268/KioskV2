@@ -34,42 +34,35 @@
             <th>기타</th>
         </tr>
     </thead>
-    <tbody class="tbody" th:if="${result} == null" th:each="member : ${members}">
-        <td th:text="${member.getNo()}" id="member_No">매장번호</td>
-        <input type="hidden" id="memberNo" th:value="${member.no}"/>
+    <tbody class="tbody" th:each="member : ${members}">
+        <td th:text="${member.getNo()}">매장번호</td>
         <td><img th:each="file : ${member.getThumbImg()}" th:src="|/api/memberImages/${file.getSaveName()}|" width="100" height="50" id="img"/></td>
         <td th:text="${member.getId()}" id="memberName">매장명</td>
         <td th:text="${member.getLocation()}" id="location">위치</td>
         <td th:text="${member.getRegDate()}" id="regDate">입점일자</td>
         <td>
             <a th:href="@{/admin/member/{memberNo}(memberNo=${member.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>
-            <button type="button" class="btn btn-danger" id="btn_member_delete">삭제</button>
+            <button type="button" class="btn btn-danger" id="btn_member_delete" th:onclick="|delete_member.delete(${member.getNo()})|">삭제</button>
         </td>
     </tbody>
 
 </table>
 <script type="text/javascript">
-    $(function(){
-        $('#btn_member_delete').click(function(){
 
-            var memberNo = $('#memberNo').val();
-
+    let delete_member = {
+        delete: function (memberNo) {
             $.ajax({
-                type:'DELETE',
-                url: '/api/member/' + memberNo,
-                dataType:'json',
-                contentType:'application/json; charset=UTF-8',
-                success: function () {
-                    alert('성공적으로 삭제되었습니다.');
-                    window.location.href = '/admin/members';
-                },
-                error:function(){
-                    alert('삭제에 실패했습니다. 다시 시도해 주세요.');
-                }
+                type: "DELETE",
+                url: `/api/member/` + memberNo,
+                dataType: "json"
+            }).done(function (response) {
+                alert('성공적으로 삭제되었습니다.');
+                window.location.href = '/admin/members';
+            }).fail(function (error) {
+                alert(JSON.stringify(error));
             });
-
-        });
-    });
+        }
+    }
 
     $(function (){
        $('#btn_search_role').click(function (){
