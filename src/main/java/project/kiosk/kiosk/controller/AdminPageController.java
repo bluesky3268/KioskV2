@@ -58,29 +58,51 @@ public class AdminPageController {
     }
 
     @GetMapping("/members")
-    public String memberList(Model model) {
-        List members = new ArrayList<>();
+    public String memberList(Model model, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<Member> members = null;
+
         try {
-            members = memberService.findMemberByRole(Role.MANAGER);
+            members = memberService.findMemberByRoleWithPage(Role.MANAGER, pageable);
         } catch (NullPointerException e) {
             log.info("데이터 없음 : {}", e.getStackTrace());
         }
+
+        int startPage = Math.max(1, members.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(members.getTotalPages(), members.getPageable().getPageNumber() + 4);
+
         model.addAttribute("members", members);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         return "admin/member/memberList";
     }
 
     @GetMapping("/members/{role}")
-    public String getMemberList(@PathVariable String role, Model model) {
-        List members = new ArrayList<>();
+    public String getMemberList(@PathVariable String role, Model model, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable) {
+
         if (role.equals("supervisor")) {
-            members = memberService.findMemberByRole(Role.SUPERVISOR);
+            Page<Member> members = memberService.findMemberByRoleWithPage(Role.SUPERVISOR, pageable);
+
+            int startPage = Math.max(1, members.getPageable().getPageNumber() - 4);
+            int endPage = Math.min(members.getTotalPages(), members.getPageable().getPageNumber() + 4);
+
             model.addAttribute("members", members);
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
+
             return "admin/member/memberListSupervisor";
         }else{
-            members = memberService.findMemberByRole(Role.MANAGER);
+            Page<Member> members = memberService.findMemberByRoleWithPage(Role.MANAGER, pageable);
+
+            int startPage = Math.max(1, members.getPageable().getPageNumber() - 4);
+            int endPage = Math.min(members.getTotalPages(), members.getPageable().getPageNumber() + 4);
+
             model.addAttribute("members", members);
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
+
             return "admin/member/memberListManager";
         }
+
     }
 
     //==== item ====

@@ -36,6 +36,8 @@ public interface MemberService {
 
     List<Member> findMemberByRole(Role role);
 
+    Page<Member> findMemberByRoleWithPage(Role role, Pageable pageable);
+
     String logout(HttpSession session);
 
     Member updateMember(Long memberNo, MemberUpdateDTO updateMember, MultipartFile multipartFile);

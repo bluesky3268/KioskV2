@@ -193,6 +193,17 @@ public class MemberServiceImpl implements MemberService {
 
     }
 
+
+    @Override
+    public Page<Member> findMemberByRoleWithPage(Role role, Pageable pageable) {
+        Page<Member> result = memberRepository.findAllByRoleLike(role, pageable);
+        if (!result.isEmpty()) {
+            return result;
+        }else{
+            throw new NullPointerException("데이터 베이스에 저장된 값이 하나도 없습니다.");
+        }
+    }
+
     @Override
     public Member findMemberById(String id) {
         Member findMember = memberRepository.findMemberById(id);
