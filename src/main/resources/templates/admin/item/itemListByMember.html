@@ -24,12 +24,12 @@
 
     <a th:href="@{/admin/items}" type="button" id="btn_items" class="btn btn-secondary">전체보기</a>
 </div>
-<h4 th:text="${memberId}"></h4>
+<h4 th:text="${member.getId()}"></h4>
 <div class="col-md-12">
     <div class="col-md-8">
-        <table class="table table-horizontal table-bordered">
+        <table class="table table-horizontal table-bordered" style="text-align: center">
             <thead>
-            <tr>
+            <tr class="table-light">
                 <th>상품번호</th>
                 <th>사진</th>
                 <th>상품명</th>
@@ -90,9 +90,8 @@
                         window.location.href = '/admin/items';
                     }
                 },
-                error:function(error){
-                    alert(JSON.stringify(error))
-                }
+
+
             });
 
         });

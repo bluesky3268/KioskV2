@@ -197,6 +197,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public Page<Member> findMemberByRoleWithPage(Role role, Pageable pageable) {
         Page<Member> result = memberRepository.findAllByRoleLike(role, pageable);
+
         if (!result.isEmpty()) {
             return result;
         }else{
@@ -225,9 +226,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member updateMember(Long memberNo, MemberUpdateDTO updateMember, MultipartFile multipartFile) {
-        log.info("updateMember pwd : {}", updateMember.getPassword());
 
+        log.info("updateMember location : {}", updateMember.getLocation());
         Member member = memberRepository.findMemberByNo(memberNo);
+        log.info("findMember location : {}", member.getLocation());
 
         String password = "";
         if (updateMember.getPassword() == null || updateMember.getPassword() == "") {
@@ -257,9 +259,11 @@ public class MemberServiceImpl implements MemberService {
             role = Role.MANAGER;
         }
 
-        String location = null;
-        if (updateMember.getLocation().equals("") || updateMember.getLocation() == null) {
+        String location = "";
+        if (updateMember.getLocation() == null || updateMember.getLocation().equals("")) {
             location = member.getLocation();
+        }else{
+            location = updateMember.getLocation();
         }
 
         member.setPassword(password);

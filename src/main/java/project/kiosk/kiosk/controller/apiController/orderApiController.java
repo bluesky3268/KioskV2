@@ -12,6 +12,7 @@ import project.kiosk.kiosk.entity.Order;
 import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.OrderService;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +31,5 @@ public class orderApiController {
 //        model.addAttribute("orders", orders);
         return orders;
     }
-
 
 }

@@ -70,6 +70,7 @@ public class MemberApiController {
     @PatchMapping("/member/{no}")
     public Long editMember(@PathVariable("no") Long memberNo, @RequestPart(value = "key") @Validated MemberUpdateDTO updateMember, BindingResult bindingResult,
                            @RequestPart(value = "img") MultipartFile img, Model model) {
+        log.info("edit member location: {}", updateMember.getLocation());
         Long no = 0L;
         if (!bindingResult.hasErrors()) {
             Member member = memberService.updateMember(memberNo, updateMember, img);

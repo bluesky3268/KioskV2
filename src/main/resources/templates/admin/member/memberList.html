@@ -23,9 +23,9 @@
     </select>
     <button type="button" id="btn_search_role">검색</button>
 </div>
-<table class="table table-horizontal table-bordered">
+<table class="table table-horizontal table-bordered" style="text-align: center">
     <thead>
-        <tr>
+    <tr class="table-light">
             <th>매장번호</th>
             <th>매장로고</th>
             <th>매장명</th>
@@ -48,18 +48,18 @@
 </table>
 
 <nav aria-label="pagination">
-        <ul class="pagination justify-content-center">
-            <li class="page-item" th:classappend="${members.getPageable().getPageNumber() + 1 == 1} ? 'disabled'">
-                <a class="page-link" th:href="@{/admin/members(page=${members.getPageable().getPageNumber() -1})}" tabindex="-1" aria-disabled="true">이전</a>
-            </li>
-            <li class="page-item" th:classappend="${i == members.getPageable().getPageNumber() + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                <a class="page-link" th:href="@{/admin/members(page=${i - 1})}" th:text="${i}">1</a>
-            </li>
-            <li class="page-item" th:classappend="${members.getPageable().getPageNumber() + 1 == members.getTotalPages()} ? 'disabled'">
-                <a class="page-link" th:href="@{/admin/members(page=${members.getPageable().getPageNumber() +1})}" >다음</a>
-            </li>
-        </ul>
-    </nav>
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${members.getPageable().getPageNumber() + 1 == 1} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${members.getPageable().getPageNumber() -1})}" tabindex="-1" aria-disabled="true">이전</a>
+        </li>
+        <li class="page-item" th:classappend="${i == members.getPageable().getPageNumber() + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+            <a class="page-link" th:href="@{/admin/members(page=${i - 1})}" th:text="${i}">1</a>
+        </li>
+        <li class="page-item" th:classappend="${members.getPageable().getPageNumber() + 1 == members.getTotalPages()} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/members(page=${members.getPageable().getPageNumber() +1})}" >다음</a>
+        </li>
+    </ul>
+</nav>
 <script type="text/javascript">
 
     let delete_member = {
@@ -89,6 +89,7 @@
                success:  function () {
                    window.location.href = '/admin/members/' + role;
                }
+
            });
        });
     });

@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
     <title>Title</title>
 </head>
-<body>
-결제 성공
-<input type="button" th:text="확인" th:onclick="|location.href='@{/confirm}'|" />
+<body style="text-align: center">
+<h3>[ 결제 성공적으로 완료되었습니다. ]</h3>
+<input type="button" th:value="확인" th:onclick="|location.href='@{/confirm}'|" class="btn-primary">
 </body>
 </html>

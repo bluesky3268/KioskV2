@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
     <title>Title</title>
 </head>
-<body>
- 결제하기
+<body style="text-align: center">
+<h4>[ 결제하기 ]</h4>
 
  <div th:each="cart : ${session.cart}" id="order">
-     <span th:text="${cart.getItem().getItemName()}" th:value="${cart.getItem().getItemName()}" id="itemName"></span>
+    상품명 :  <span th:text="${cart.getItem().getItemName()}" th:value="${cart.getItem().getItemName()}" id="itemName"></span><br/>
      <span th:text="${cart.quantity} + 개" th:value="${cart.getQuantity()}" id="quantity"></span> X
      <span th:text="${cart.getItem().getPrice()} + 원" th:value="${cart.getItem().getPrice()}" id = price></span>
- </div>
- <div th:text="${session.totalPrice} + 원" th:value="${session.totalPrice}" id="totalPrice"/>
- <button type="button" id="btn_payment" th:value="결제하기" th:onclick="|location.href='@{/payment}'|">결제하기</button>
+ </div><br/>
+ <div th:text="'총 결제 금액 : ' + ${session.totalPrice} + '원'" th:value="${session.totalPrice}" id="totalPrice"/>
+ <button type="button" class="btn btn-outline-primary"><a href="javascript:history.back(-1)">뒤로</a></button>
+ <button type="button" id="btn_payment" th:value="결제하기" th:onclick="|location.href='@{/payment}'|" class="btn btn-primary">결제하기</button>
 </body>
 
 <!--<script type="text/javascript">-->

@@ -16,10 +16,10 @@
 
 <h2>주문 목록</h2>
 <div th:text="${member.getId()}"/>
-<table class="table table-horizontal table-bordered">
+<table class="table table-horizontal table-bordered" style="text-align: center">
     <thead>
-    <tr>
-        <th>매장명</th>
+    <tr class="table-light">
+    <th>매장명</th>
         <th>주문번호</th>
         <th>상품명</th>
         <th>가격</th>
@@ -38,7 +38,19 @@
     <td th:text="${order.getRegDate()}" id="regDate">주문 총 가격</td>
     </tbody>
 </table>
-
+<nav aria-label="pagination">
+    <ul class="pagination justify-content-center">
+        <li class="page-item" th:classappend="${orders.getPageable().getPageNumber() + 1 == 1} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/orders(page=${orders.getPageable().getPageNumber() -1})}" tabindex="-1" aria-disabled="true">이전</a>
+        </li>
+        <li class="page-item" th:classappend="${i == orders.getPageable().getPageNumber() + 1} ? 'disabled'" th:each="i : ${#numbers.sequence(startPage, endPage)}">
+            <a class="page-link" th:href="@{/admin/orders(page=${i - 1})}" th:text="${i}">1</a>
+        </li>
+        <li class="page-item" th:classappend="${orders.getPageable().getPageNumber() + 1 == orders.getTotalPages()} ? 'disabled'">
+            <a class="page-link" th:href="@{/admin/orders(page=${orders.getPageable().getPageNumber() +1})}" >다음</a>
+        </li>
+    </ul>
+</nav>
 <script type="text/javascript">
 
 

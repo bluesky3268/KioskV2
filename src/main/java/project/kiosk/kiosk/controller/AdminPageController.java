@@ -173,32 +173,45 @@ public class AdminPageController {
     }
 
     @GetMapping("/items")
-    public String itemListAll(Model model, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable, HttpSession session) {
+    public String itemListAll(Model model, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable) {
         Page<Item> itemList = itemService.findAll(pageable);
         List<Member> members = memberService.findMemberByRole(Role.MANAGER);
 
         int startPage = Math.max(1, itemList.getPageable().getPageNumber() - 4);
         int endPage = Math.min(itemList.getTotalPages(), itemList.getPageable().getPageNumber() + 4);
 
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
         model.addAttribute("items", itemList);
         model.addAttribute("members", members);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         return "admin/item/itemList";
     }
 
-    //order
+    //==== order ====
 
     @GetMapping("/orders")
-    public String orderListAll(Pageable pageable, Model model, HttpSession session) {
+    public String orderListAll(@PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable, Model model, HttpSession session) {
         String role = String.valueOf(session.getAttribute("role"));
         if (role.equals("SUPERVISOR")) {
             List<Member> members = memberService.findMemberByRole(Role.MANAGER);
             Page<Order> orders = orderService.findAll(pageable);
 
+            log.info("orders size : {}", orders.getSize());
+            for (Order order : orders) {
+                log.info("order regDate : {}", order.getRegDate());
+            }
+
+            int startPage = Math.max(1, orders.getPageable().getPageNumber() - 4);
+            int endPage = Math.min(orders.getTotalPages(), orders.getPageable().getPageNumber() + 4);
+            log.info("orders startPage : {}", startPage);
+            log.info("orders endPage : {}", endPage);
+
             model.addAttribute("orders", orders);
             model.addAttribute("members", members);
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
+
 
             return "admin/order/orderList";
         }else{
@@ -206,9 +219,18 @@ public class AdminPageController {
             Member member = memberService.findMemberById(id);
 
             Page<Order> orders = orderService.findOrdersByMemberNoWithPaging(member.getNo(), pageable);
+            for (Order order : orders) {
+                log.info("order regDate : {}", order.getRegDate());
+            }
+
+
+            int startPage = Math.max(1, orders.getPageable().getPageNumber() - 4);
+            int endPage = Math.min(orders.getTotalPages(), orders.getPageable().getPageNumber() + 4);
 
             model.addAttribute("member", member);
             model.addAttribute("orders", orders);
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
 
             return "admin/order/orderListForMember";
         }
@@ -216,13 +238,22 @@ public class AdminPageController {
     }
 
     @GetMapping("/orders/member/{memberNo}")
-    public String orderListByMember(@PathVariable Long memberNo, Pageable pageable, Model model) {
+    public String orderListByMember(@PathVariable Long memberNo, @PageableDefault(size = 5, sort = "no", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
 
         Page<Order> orders = orderService.findOrdersByMemberNoWithPaging(memberNo, pageable);
         List<Member> members = memberService.findMemberByRole(Role.MANAGER);
 
+        for (Order order : orders) {
+            log.info("regDate : {}", order.getRegDate());
+        }
+
+        int startPage = Math.max(1, orders.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(orders.getTotalPages(), orders.getPageable().getPageNumber() + 4);
+
         model.addAttribute("members", members);
         model.addAttribute("orders", orders);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
 
         return "admin/order/orderListByMember";
     }

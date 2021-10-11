@@ -4,26 +4,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import project.kiosk.kiosk.dto.CartDTO;
-import project.kiosk.kiosk.dto.OrderDTO;
 import project.kiosk.kiosk.dto.responseDto.ItemResponseDto;
-import project.kiosk.kiosk.dto.responseDto.MemberListResponseDto;
 import project.kiosk.kiosk.entity.Item;
 import project.kiosk.kiosk.entity.Member;
-import project.kiosk.kiosk.entity.Order;
 import project.kiosk.kiosk.entity.Role;
-import project.kiosk.kiosk.repository.OrderRepository;
 import project.kiosk.kiosk.service.ItemService;
 import project.kiosk.kiosk.service.MemberService;
 import project.kiosk.kiosk.service.OrderService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Slf4j
 @Controller
@@ -46,15 +46,24 @@ public class MainController {
     }
 
     @GetMapping("/member/{no}")
-    public String itemPage(@PathVariable Long no, Pageable pageable, Model model) {
-        Page<Member> members = memberService.memberPaging(pageable);
-        List<Item> items = itemService.findItems(no);
+    public String itemPage(@PathVariable Long no, @PageableDefault(size = 9, sort = "no", direction = Sort.Direction.ASC) Pageable pageable, Model model) {
+
+        List<Member> members = memberService.findMemberByRole(Role.MANAGER);
+        Page<Item> items = itemService.findByMemberNoWithPage(no, pageable);
 
         for (Item item : items) {
-            log.info("item : {}", item.getItemName());
+            log.info("item name : {}", item.getItemName());
         }
+
+        int startPage = Math.max(1, items.getPageable().getPageNumber() - 4);
+        int endPage = Math.min(items.getTotalPages(), items.getPageable().getPageNumber() + 4);
+
+        model.addAttribute("memberNo", no);
         model.addAttribute("members", members);
         model.addAttribute("items", items);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+
         return "main/items";
     }
 
@@ -94,19 +103,37 @@ public class MainController {
 
     }
 
-    @GetMapping("/order")
-    public String order(HttpSession session) {
-        ArrayList<CartDTO> cart = (ArrayList<CartDTO>) session.getAttribute("cart");
-
-        int totalPrice = 0;
-        for (int i = 0; i < cart.size(); i++) {
-            int price = cart.get(i).getItem().getPrice();
-            int quantity = cart.get(i).getQuantity();
-            totalPrice += price * quantity;
+    @GetMapping("/order/reset/{memberNo}")
+    public String cartReset(@PathVariable("memberNo") Long no, HttpSession session) {
+        if (session.getAttribute("cart") != null) {
+            session.removeAttribute("cart");
+            session.removeAttribute("totalPrice");
         }
+        log.info("memberNo : {}", no);
 
-        session.setAttribute("totalPrice", totalPrice);
-        return "main/payment";
+        return "redirect:/member/" + no;
+    }
+
+    @GetMapping("/order")
+    public String order(HttpServletRequest request, HttpSession session) {
+        try {
+            ArrayList<CartDTO> cart = (ArrayList<CartDTO>) session.getAttribute("cart");
+
+            int totalPrice = 0;
+            for (int i = 0; i < cart.size(); i++) {
+                int price = cart.get(i).getItem().getPrice();
+                int quantity = cart.get(i).getQuantity();
+                totalPrice += price * quantity;
+            }
+
+            session.setAttribute("totalPrice", totalPrice);
+            return "main/payment";
+
+        } catch (NullPointerException e) {
+            String referer = request.getHeader("REFERER");
+            log.info("장바구니에 상품이 없습니다.");
+            return "redirect:" + referer;
+        }
     }
 
     @GetMapping("/payment")
