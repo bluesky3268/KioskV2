@@ -4,8 +4,23 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <script src="/js/jquery-3.6.0.min.js"></script>
+    <style>
+        *{
+            text-align: center;
+        }
+        table{
+            text-align: center;
+            margin-left:10px;
+            margin-right:10px;
+        }
+        #select_store{
+            text-align: right;
+            margin-right: 15px;
+            margin-bottom: 10px;
+        }
+    </style>
 
-    <title>매장 관리</title>
+    <title>주문 관리</title>
 </head>
 <body>
 <button type="button" class="btn btn-outline-primary"><a href="javascript:history.back(-1)">뒤로</a></button>
@@ -15,18 +30,19 @@
 <br/>
 
 <h2>주문 목록</h2>
-<div>
-    <select id="select_store">
+<div id="select_store">
+    <select id="store">
         <option>-</option>
         <option th:each="member : ${members}" th:value="${member.getNo()}" th:text="${member.getId()}">매장명</option>
     </select>
     <button type="button" id="btn_search_member" class="btn btn-primary">검색</button>
     <a type="button" th:href="@{/admin/orders}" class="btn btn-primary">전체보기</a>
 </div>
+<h4 th:text="${orders.getContent().get(0).getMember().getId()}" th:value="${orders.getContent().get(0).getMember().getId()}" id="storeName"></h4>
 <table class="table table-horizontal table-bordered" style="text-align: center">
     <thead>
     <tr class="table-light">
-    <th>매장명</th>
+        <th>매장명</th>
         <th>주문번호</th>
         <th>상품명</th>
         <th>가격</th>
@@ -65,7 +81,7 @@
     $(function (){
         $('#btn_search_member').click(function (){
 
-            var memberNo = $('select[id=select_store]').val();
+            var memberNo = $('#store').val();
 
             $.ajax({
                 type:'GET',

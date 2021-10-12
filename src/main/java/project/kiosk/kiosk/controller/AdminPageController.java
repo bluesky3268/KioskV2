@@ -63,16 +63,17 @@ public class AdminPageController {
 
         try {
             members = memberService.findMemberByRoleWithPage(Role.MANAGER, pageable);
+            int startPage = Math.max(1, members.getPageable().getPageNumber() - 4);
+            int endPage = Math.min(members.getTotalPages(), members.getPageable().getPageNumber() + 4);
+
+            model.addAttribute("members", members);
+            model.addAttribute("startPage", startPage);
+            model.addAttribute("endPage", endPage);
         } catch (NullPointerException e) {
             log.info("데이터 없음 : {}", e.getStackTrace());
+            return "admin/member/joinForm";
         }
 
-        int startPage = Math.max(1, members.getPageable().getPageNumber() - 4);
-        int endPage = Math.min(members.getTotalPages(), members.getPageable().getPageNumber() + 4);
-
-        model.addAttribute("members", members);
-        model.addAttribute("startPage", startPage);
-        model.addAttribute("endPage", endPage);
         return "admin/member/memberList";
     }
 
