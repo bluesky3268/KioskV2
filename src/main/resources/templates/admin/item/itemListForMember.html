@@ -54,7 +54,7 @@
             <td th:unless="${item.isSoldOut.toString().equals('false')}">품절</td>
             <td>
                 <a th:href="@{/admin/item/{itemNo}(itemNo=${item.getNo()})}" type="button" class="btn btn-primary" id="btn_item_update">수정</a>
-                <button type="button" class="btn btn-danger" id="btn_item_delete">삭제</button>
+                <button type="button" class="btn btn-danger" id="btn_item_delete" th:onclick="|delete_item.delete(${item.getNo()})|">삭제</button>
             </td>
             </tbody>
         </table>
@@ -74,33 +74,29 @@
     </div>
 </div>
 <script type="text/javascript">
-    $(function(){
-        $(document).on("click", "#btn_item_delete", function(){
+    let delete_item = {
 
-            var itemNo = $('#itemNo').val();
+        delete: function (itemNo) {
+
             var memberNo = $('#memberNo').val();
             var role= $('#role').val();
 
             $.ajax({
-                type:'DELETE',
-                url: '/api/item/' + itemNo,
-                dataType:'json',
-                contentType:'application/json; charset=UTF-8',
-                success: function () {
-                    alert('성공적으로 삭제되었습니다.');
-                    if(role === 'MANAGER'){
-                        window.location.href = '/admin/items/' + memberNo;
-                    }else if (role === 'SUPERVISOR') {
-                        window.location.href = '/admin/items';
-                    }
-                },
-                error:function(error){
-                    alert(JSON.stringify(error))
+                type: "DELETE",
+                url: `/api/item/` + itemNo,
+                dataType: "json"
+            }).done(function (response) {
+                alert('성공적으로 삭제되었습니다.');
+                if(role == 'MANAGER'){
+                    window.location.href = '/admin/items/' + memberNo;
+                }else if (role == 'SUPERVISOR') {
+                    window.location.href = '/admin/items';
                 }
+            }).fail(function (error) {
+                alert("삭제에 실패하였습니다. 다시 시도해주세요.");
             });
-
-        });
-    });
+        }
+    }
 
 
     $(function (){

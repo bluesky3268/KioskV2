@@ -9,7 +9,7 @@
 <body>
 <h3 style="text-align: center">[ 상품 목록 ]</h3>
 <nav class="nav">
-    <ul class="nav justify-content-center">
+    <ul class="nav justify-content-lg-center">
         <li class="nav-item" th:each="member:${members}">
             <a class="nav-link" th:href="@{/member/{memberNo}(memberNo = ${member.getNo()})}" th:text="${member.getId()}">1</a>
         </li>
